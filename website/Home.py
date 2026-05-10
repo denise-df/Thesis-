@@ -76,8 +76,15 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
 .stApp { background: linear-gradient(135deg, #0A1F17 0%, #1B4332 100%) !important; }
 
 /* ── hero ── */
+# Cerca questa sezione nel blocco GLOBAL CSS
 .hero-massive {
-    background: linear-gradient(135deg, rgba(8,28,21,.95), rgba(27,67,50,.9));
+    /* Sostituisci il vecchio background con questo */
+    background: 
+        linear-gradient(90deg, rgba(8,28,21,1) 0%, rgba(8,28,21,0.8) 40%, rgba(8,28,21,0.1) 100%),
+        url(""C:\Users\denis\OneDrive\Desktop\LUISS\Tesi\codtesi\.venv\website\Home.py"");
+    
+    background-size: cover;
+    background-position: center right;
     padding: 4rem 3rem;
     border-radius: 24px;
     margin: 2rem 0 3rem 0;
