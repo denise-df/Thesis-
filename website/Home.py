@@ -25,7 +25,6 @@ def get_base64(bin_file):
 
 # Assicurati di caricare 'background_van.jpg' nella stessa cartella di Home.py su GitHub
 img_path = os.path.join(os.path.dirname(__file__), 'background_van.jpg')
-
 try:
     bin_str = get_base64(img_path)
     bg_img_style = f"url('data:image/jpg;base64,{bin_str}')"
@@ -94,7 +93,9 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
 .hero-massive {
     background: 
         linear-gradient(90deg, rgba(8,28,21,1) 0%, rgba(8,28,21,0.8) 45%, rgba(8,28,21,0.1) 100%),
-        """ + bg_img_style + r""";
+        url("https://github.com/denise-df/Thesis-/blob/main/website/background_van.png");
+    background-size: cover;
+    background-position: center right;
     background-size: cover;
     background-position: center right;
     padding: 4rem 3rem;
