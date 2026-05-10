@@ -16,17 +16,10 @@ st.set_page_config(
 )
 
 # ── Global Constants & Data ────────────────────────────────────────────
-# NOTE ON GRID INTENSITY:
-# This simulator uses the IEA Global Average (0.475 kg CO₂/kWh) to reflect
-# a geographically-neutral, conservative estimate suitable for general use.
-# The research notebooks (NB03–NB08) use the EU Eurostat 2024 average
-# (0.233 kg CO₂/kWh) for EU-specific fleet analysis.
-# For EU-only fleets, replacing GLOBAL_GRID_INTENSITY with 0.233 gives
-# results consistent with the thesis simulation pipeline.
-GLOBAL_GRID_INTENSITY = 0.475  # kg CO₂/kWh — IEA Global Average 2024-2025
-                                # EU-specific: 0.233 kg CO₂/kWh (Eurostat 2024, used in NB03-NB08)
+
+GLOBAL_GRID_INTENSITY = 0.233  # kg CO₂/kWh
 GLOBAL_DIESEL_CO2 = 2.640      # kg CO₂/L (IPCC Standard, coerente con tutti i notebook)
-GLOBAL_SCC = 80.0              # €/tonne (Global Social Cost of Carbon benchmark)
+GLOBAL_SCC = 65.0              # €/tonne (Global Social Cost of Carbon benchmark)
 
 # ── Navigation ─────────────────────────────────────────────────────────
 def render_navigation(current_page="Simulator"):
