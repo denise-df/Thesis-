@@ -157,30 +157,29 @@ def load_map(file_name):
                 return f.read()
     return None
 
+col1, col2 = st.columns(2)
+
 with col1:
-    st.markdown("### 🌆 Urban Context (Rome, EUR)")
-    st.write("High population density. Routes tend to overlap significantly, but the short overall distance partially mitigates the emission penalty caused by urgency.")
+    st.header("🏙️ Urban Analysis")
+    path_urban = "https://github.com/denise-df/Thesis-/blob/main/NB09_Topological_Analysis_Urban.py"
     
-    map_urban = load_map("thesis_result_map_REAL_ROADS_urban.html")
-    if map_urban:
-        st.markdown("<div class='map-container'>", unsafe_allow_html=True)
-        components.html(map_urban, height=550)
-        st.markdown("</div>", unsafe_allow_html=True)
+    if os.path.exists(path_urban):
+        with open(path_urban, 'r', encoding='utf-8') as f:
+            html_data = f.read()
+            components.html(html_data, height=550) # Carica la mappa reale
     else:
-        st.warning("Urban map not found. Please ensure 'thesis_result_map_REAL_ROADS_urban.html' is generated via NB09 (Topological Analysis — Urban) and placed in the project root folder.")
+        st.error("Mappa Urban non trovata su GitHub")
 
 with col2:
-    st.markdown("### 🌲 Rural Context (Castelli Romani)")
-    st.write("Low density. Here, the lack of consolidation is critical: every urgent or fragmented delivery generates massive amounts of empty, unproductive kilometers.")
+    st.header("🌲 Rural Analysis")
+    path_rural = "thesis_result_map_REAL_ROADS_rural.html"
     
-    map_rural = load_map("thesis_result_map_REAL_ROADS_rural.html")
-    if map_rural:
-        st.markdown("<div class='map-container'>", unsafe_allow_html=True)
-        components.html(map_rural, height=550)
-        st.markdown("</div>", unsafe_allow_html=True)
+    if os.path.exists(path_rural):
+        with open(path_rural, 'r', encoding='utf-8') as f:
+            html_data = f.read()
+            components.html(html_data, height=550) # Carica la mappa reale
     else:
-        st.warning("Rural map not found. Please ensure 'thesis_result_map_REAL_ROADS_rural.html' is generated via NB10 (Topological Analysis — Rural) and placed in the project root folder.")
-
+        st.error("Mappa Rural non trovata su GitHub")
 st.markdown("<div style='height: 2rem;'></div>", unsafe_allow_html=True)
 
 # ── Key Takeaway ───────────────────────────────────────────────────────
