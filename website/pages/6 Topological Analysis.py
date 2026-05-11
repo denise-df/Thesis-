@@ -161,7 +161,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.header("🏙️ Urban Analysis")
-    path_urban = "https://github.com/denise-df/Thesis-/blob/main/NB09_Topological_Analysis_Urban.py"
+    path_urban = "thesis_result_map_REAL_ROADS_rural.html"
     
     if os.path.exists(path_urban):
         with open(path_urban, 'r', encoding='utf-8') as f:
@@ -172,7 +172,7 @@ with col1:
 
 with col2:
     st.header("🌲 Rural Analysis")
-    path_rural = "thesis_result_map_REAL_ROADS_rural.html"
+    path_rural = "thesis_result_map_REAL_ROADS_urban.html"
     
     if os.path.exists(path_rural):
         with open(path_rural, 'r', encoding='utf-8') as f:
