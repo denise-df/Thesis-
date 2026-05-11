@@ -81,7 +81,7 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
     /* Sostituisci il vecchio background con questo */
     background: 
         linear-gradient(90deg, rgba(8,28,21,1) 0%, rgba(8,28,21,0.8) 40%, rgba(8,28,21,0.1) 100%),
-        url(""C:\Users\denis\OneDrive\Desktop\LUISS\Tesi\codtesi\.venv\website\Home.py"");
+        url("https://github.com/denise-df/Thesis-/blob/main/website/background_van.png");
     
     background-size: cover;
     background-position: center right;
