@@ -261,7 +261,7 @@ st.markdown("""
         <tr>
             <td><span class='mono-tag'>NB01</span></td>
             <td><strong>EDA & Data Cleaning</strong></td>
-            <td><span class='mono-tag'>india_green_final.csv</span></td>
+            <td><span class='mono-tag'>india_cleaned.csv</span></td>            
             <td>Processes OBD-II telemetry, EV BMS logs and India Logistics dataset (25,000 shipments). Handles outliers, normalises features.</td>
         </tr>
         <tr>
