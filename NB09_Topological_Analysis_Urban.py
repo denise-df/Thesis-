@@ -145,16 +145,16 @@ print(f"TOTAL EMISSION PENALTY  : +{diff_perc:.1f}%")
 print("="*45)
 
 # =====================================================================
-# 7. MAP GENERATION (FOLIUM)
+# 7. MAP GENERATION (FOLIUM) - ENRICHED URBAN TOPOLOGY
 # =====================================================================
 colors_express = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231']
-m_urban = folium.Map(location=hub_coords, zoom_start=13, tiles='cartodbpositron')
+m_urban = folium.Map(location=hub_coords, tiles='cartodbpositron') 
 plugins.Fullscreen(position='topleft').add_to(m_urban)
 
 fg_standard = folium.FeatureGroup(name="🟦 Scenario A: Standard (Consolidated)")
 fg_express = folium.FeatureGroup(name="🟥 Scenario B: Express (Fragmented)")
 
-# Render Standard Route
+# --- RENDER SCENARIO A: STANDARD ---
 coords_sus_real = [(G.nodes[n]['y'], G.nodes[n]['x']) for n in path_standard_geom]
 plugins.AntPath(
     locations=coords_sus_real,
@@ -162,26 +162,60 @@ plugins.AntPath(
     tooltip=f"Consolidated Loop ({km_standard:.1f} km)"
 ).add_to(fg_standard)
 
-# Render Express Routes
+# Marker numerati per le consegne consolidate
+for seq, node in enumerate(route_standard_stops[1:-1], start=1):
+    lat, lon = G.nodes[node]['y'], G.nodes[node]['x']
+    folium.Marker(
+        location=[lat, lon],
+        tooltip=f"Consegna #{seq} (Consolidata)",
+        icon=plugins.BeautifyIcon(
+            icon_shape='circle', border_color='#0056b3', text_color='#0056b3',
+            number=seq, background_color='white', border_width=2
+        )
+    ).add_to(fg_standard)
+
+# --- RENDER SCENARIO B: EXPRESS ---
 for i, geometry_nodes in enumerate(paths_express_geom):
     coords_real = [(G.nodes[n]['y'], G.nodes[n]['x']) for n in geometry_nodes]
     color = colors_express[i % len(colors_express)]
+    
     plugins.AntPath(
         locations=coords_real,
         color=color, pulse_color='#FFFFFF', delay=600, weight=4, opacity=0.7, dash_array=[10, 20],
         tooltip=f"Express Trip #{i+1}"
     ).add_to(fg_express)
+    
+    # Marker numerati per ogni sotto-giro express
+    for seq, node in enumerate(routes_express_stops[i][1:-1], start=1):
+        lat, lon = G.nodes[node]['y'], G.nodes[node]['x']
+        folium.Marker(
+            location=[lat, lon],
+            tooltip=f"Trip {i+1} - Consegna #{seq}",
+            icon=plugins.BeautifyIcon(
+                icon_shape='circle', border_color=color, text_color=color,
+                number=seq, background_color='white', border_width=2
+            )
+        ).add_to(fg_express)
 
-# Render Hub
+# --- HUB & CONFIGURAZIONI ---
 folium.Marker(
-    hub_coords, popup="<b>CENTRAL HUB</b>",
-    icon=plugins.BeautifyIcon(icon='industry', prefix='fa', text_color='white', background_color='#222222', border_color='#222222', icon_shape='rectangle-dot', border_width=2),
+    hub_coords, popup="<b>CENTRAL HUB (URBAN)</b>",
+    icon=plugins.BeautifyIcon(
+        icon='industry', prefix='fa', text_color='white', 
+        background_color='#222222', border_color='#222222', 
+        icon_shape='rectangle-dot', border_width=2
+    ),
     z_index_offset=1000
 ).add_to(m_urban)
 
 fg_standard.add_to(m_urban)
 fg_express.add_to(m_urban)
 folium.LayerControl(collapsed=False).add_to(m_urban)
+
+# Calcolo del Bounding Box dinamico basato sui nodi effettivi
+all_lats = [G.nodes[n]['y'] for n in daily_orders] + [hub_coords[0]]
+all_lons = [G.nodes[n]['x'] for n in daily_orders] + [hub_coords[1]]
+m_urban.fit_bounds([[min(all_lats), min(all_lons)], [max(all_lats), max(all_lons)]])
 
 # Dashboard HTML Overlay
 title_html_pro = f'''
