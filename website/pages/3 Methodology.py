@@ -29,7 +29,7 @@ def render_navigation(current_page="Methods"):
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
     # Sostituisci la vecchia definizione di "cols" con questa:
-# [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e c'entra i 5 bottoni
+    # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e c'entra i 5 bottoni
     sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
     cols = [c1, c2, c3, c4, c5] # Passiamo solo le colonne centrali al ciclo for
 
@@ -261,14 +261,14 @@ st.markdown("""
         <tr>
             <td><span class='mono-tag'>NB01</span></td>
             <td><strong>EDA & Data Cleaning</strong></td>
-            <td><span class='mono-tag'>india_cleaned.csv</span></td>            
-            <td>Processes OBD-II telemetry, EV BMS logs and India Logistics dataset (25,000 shipments). Handles outliers, normalises features.</td>
+            <td><span class='mono-tag'>india_green_final.csv</span></td>
+            <td>Processes OBD-II telemetry, BEV certification specs (Mai et al. 2025) and India Logistics dataset (25,000 shipments). Handles outliers, normalises features.</td>
         </tr>
         <tr>
             <td><span class='mono-tag'>NB02</span></td>
             <td><strong>Model Training & Validation</strong></td>
             <td><span class='mono-tag'>model_thermal_co2.pkl · model_ev_eu_efficiency.pkl</span></td>
-            <td>Trains <strong>GradientBoosting</strong> (ICE, R²=0.79) on OBD-II telemetry and <strong>Ridge+PolynomialFeatures(2)</strong> (EV, R²≈0.77) on EU BEV certified specs (Mai et al. 2025). Iterative feature engineering across 7 model versions. EV Trip data (evtripdata.csv) was excluded due to algebraic data leakage.</td>
+            <td>Trains <strong>GradientBoosting</strong> (ICE, R²=0.74) on OBD-II telemetry and <strong>Ridge+PolynomialFeatures(2)</strong> (EV, R²=0.77) on the CN/CLTC sub-sample (n=160) of Mai et al. 2025, with a +12.04% CLTC→WLTP correction factor (Cheng et al. 2025). Iterative feature engineering across 7 model versions. EV Trip data (evtripdata.csv) was excluded due to algebraic data leakage; the EU/WLTP sub-sample (n=46) was retained only as cycle-correction reference, due to insufficient sample size for direct deployment.</td>
         </tr>
         <tr>
             <td><span class='mono-tag'>NB03</span></td>
@@ -346,13 +346,13 @@ st.markdown("""
         </tr>
         <tr>
             <td><strong>Electric Van</strong></td>
-            <td><span class='mono-tag' style='color:#52B788; border-color:#52B788;'>REAL DATA</span></td>
-            <td>BMS Logs from Mercedes eSprinter operations in Milan.</td>
+            <td><span class='mono-tag' style='color:#52B788; border-color:#52B788;'>CERTIFIED SPECS</span></td>
+            <td>BEV homologation specifications from Mai et al. (2025) <em>Scientific Data</em> 12, 1449 — CN/CLTC sub-sample (n=160), rescaled by +12.04% to align with WLTP (Cheng et al. 2025).</td>
         </tr>
         <tr>
             <td><strong>E-Scooter</strong></td>
-            <td><span class='mono-tag' style='color:#52B788; border-color:#52B788;'>REAL DATA</span></td>
-            <td>Telemetry from Askoll eS3 shared mobility fleet (Rome). Note: used for ICE scooter benchmark; EV consumption model uses certified BEV specs (Mai et al. 2025), not BMS logs.</td>
+            <td><span class='mono-tag' style='color:#E65100; border-color:#E65100; background:rgba(230,81,0,0.1);'>MARKET ARCHETYPE</span></td>
+            <td>Reference parameters from a 125 cc 4-stroke Euro 5 scooter class (typical urban last-mile delivery vehicle). Not directly modelled in the predictive engine; included as a comparison archetype only.</td>
         </tr>
         <tr>
             <td><strong>E-Cargo Bike</strong></td>
@@ -377,11 +377,11 @@ with m1:
     st.markdown("""
     <div class='method-card'>
         <div class='step-num'>ICE</div>
-        <div class='card-head' style='color:#E65100;'>Gradient Boosting (XGBoost)</div>
+        <div class='card-head' style='color:#E65100;'>Gradient Boosting (scikit-learn)</div>
         <p><strong>Why:</strong> Combustion efficiency is non-linear (optimal at ~2000 RPM). Trees capture these thresholds better than linear regression.</p>
         <div style='margin-top:1rem;'>
             <span class='mono-tag' style='color:#E65100; border-color:#E65100;'>Target: gCO₂/sec</span>
-            <span class='mono-tag' style='color:#E65100; border-color:#E65100;'>R²: 0.79</span>
+            <span class='mono-tag' style='color:#E65100; border-color:#E65100;'>R²: 0.74</span>
         </div>
         <p style='color:#95D5B2; font-size:.85rem; margin-top:.8rem;'>
             SHAP analysis (NB05) confirms <em>engine_stress</em> and <em>kinetic_power</em> as top drivers.
@@ -400,7 +400,7 @@ with m2:
             <span class='mono-tag'>R²: ≈0.77</span>
         </div>
         <p style='color:#95D5B2; font-size:.85rem; margin-top:.8rem;'>
-            Dataset: Mai et al. (2025) <em>Scientific Data</em> 12, 1449 — EU_Variant_2023 (WLTP, ~80 BEV variants). CN_VAC_2023 (CLTC) used as secondary baseline only. Grid intensity: 233 g CO₂/kWh (EU 2024, Eurostat).
+            Dataset: Mai et al. (2025) <em>Scientific Data</em> 12, 1449 — CN_VAC_2023 (CLTC, n=160 BEV variants) as operational predictor, rescaled by +12.04% to align with WLTP (Cheng et al. 2025). EU_Variant_2023 (WLTP, n=46) used as cycle-correction reference only (insufficient sample size). Grid intensity: 233 g CO₂/kWh (EU 2024, Eurostat).
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -496,14 +496,14 @@ with v1:
         <div class='step-num'>NB08</div>
         <div class='card-head'>Cross-Dataset Robustness Check</div>
         <p style='color:#B7E4C7; line-height:1.6;'>
-            The EcoFleet ML models (trained on Indian OBD-II data) are applied to the 
-            <strong>Amazon Last Mile Routing Research Challenge (LMRRC)</strong> — 
-            <strong>904,527 delivery stops</strong> across 6,112 routes in 5 US cities 
+            The EcoFleet ML models (trained on Indian OBD-II data) are applied to the
+            <strong>Amazon Last Mile Routing Research Challenge (LMRRC)</strong> —
+            <strong>904,527 delivery stops</strong> across 6,112 routes in 5 US cities
             (Austin, Boston, Chicago, Los Angeles, Seattle).
         </p>
         <p style='color:#B7E4C7; line-height:1.6; margin-top:.7rem;'>
             Distances are reconstructed via <strong>Haversine formula × 1.35</strong> road-tortuosity factor.
-            Feature engineering maps Amazon variables to the NB03 schema, with a +0.30 stop-and-go 
+            Feature engineering maps Amazon variables to the NB03 schema, with a +0.30 stop-and-go
             stress base for urban last-mile cycles.
         </p>
         <div style='margin-top:1rem;'>
