@@ -76,13 +76,12 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
 .stApp { background: linear-gradient(135deg, #0A1F17 0%, #1B4332 100%) !important; }
 
 /* ── hero ── */
-# Cerca questa sezione nel blocco GLOBAL CSS
 .hero-massive {
-    /* Sostituisci il vecchio background con questo */
-    background: 
+    background:
         linear-gradient(90deg, rgba(8,28,21,1) 0%, rgba(8,28,21,0.8) 40%, rgba(8,28,21,0.1) 100%),
-        url("https://github.com/denise-df/Thesis-/blob/main/website/background_van.png");
-    
+        linear-gradient(135deg, #1B4332 0%, #2D6A4F 100%);
+    /* NB: a custom hero background image can be added here.
+       Replace the second linear-gradient with: url(https://your-image-url.jpg); */
     background-size: cover;
     background-position: center right;
     padding: 4rem 3rem;
@@ -227,13 +226,13 @@ st.markdown("""
     <p class='hero-sub'>
         Every delivery decision is a trade-off.
         <span class='hero-hi'>Same-Day (<4h)</span> convenience comes at an environmental price —
-        <span class='hero-hi'>+150% more CO₂</span> than Standard (3-5 days) delivery.
+        <span class='hero-hi'>+218% more CO₂</span> in dense urban areas vs Standard (3-5 days) delivery.
         This platform quantifies that cost using
         <span class='hero-hi'>AI-powered prediction models</span>
         trained on <span class='hero-hi'>real OBD-II telemetry</span> and validated on
         <span class='hero-hi'>25,000 simulated logistics trips</span>.
     </p>
-    <span class='badge'>🔬 2 ML Models (ICE R²=0.79 · EV R²≈0.77)</span>
+    <span class='badge'>🔬 2 ML Models (ICE R²=0.74 · EV R²=0.77)</span>
     <span class='badge'>🚛 6 Vehicle Types</span>
     <span class='badge'>⚡ 4 SLA Profiles</span>
     <span class='badge'>📊 25,000 Simulated Logistics Trips</span>
@@ -263,16 +262,16 @@ with c2:
         <div class='s-icon'>🤖</div>
         <div class='s-num'>0.77</div>
         <div class='s-label'>EV Model R²</div>
-        <div class='s-detail'>Ridge+Poly(2) · EU WLTP specs (Mai et al. 2025)</div>
+        <div class='s-detail'>Ridge+Poly(2) · CN BEV specs n=160 (Mai et al. 2025) + 12.04% WLTP correction (Cheng et al. 2025)</div>
     </div>""", unsafe_allow_html=True)
 
 with c3:
     st.markdown("""
     <div class='stat-box'>
         <div class='s-icon'>⚠️</div>
-        <div class='s-num'>2.5×</div>
+        <div class='s-num'>3.2×</div>
         <div class='s-label'>Same-Day CO₂ Penalty</div>
-        <div class='s-detail'>vs Standard delivery (+150%)</div>
+        <div class='s-detail'>vs Standard in dense urban (+218%)</div>
     </div>""", unsafe_allow_html=True)
 
 with c4:
@@ -296,11 +295,13 @@ with col_l:
     <div class='ins-card ins-thermal'>
         <div style='font-size:2.8rem;margin-bottom:.5rem;'>🔥</div>
         <div class='ins-title'>The Speed Penalty</div>
-        <div class='ins-metric m-thermal'>+150%</div>
+        <div class='ins-metric m-thermal'>+218%</div>
         <p class='ins-text'>
-            <strong>Same-Day (<4h) delivery generates 2.5× more CO₂</strong> than Standard (3-5 days)
-            for comparable routes, based on <strong>8,332 thermal trips</strong>
-            (4,187 Van + 4,145 Truck).
+            <strong>Same-Day (&lt;4h) delivery generates 3.2× more CO₂</strong> than Standard (3-5 days)
+            in dense urban areas (Roman EUR district benchmark). For
+            <strong>Express vs Standard</strong>, the increment reaches
+            <strong>+29.3%</strong> (Dunn post-hoc test, p&lt;0.001),
+            based on the simulation of <strong>25,000 logistics trips</strong>.
         </p>
         <div class='ins-li'><strong>Fill Rate Collapse:</strong> 95% → 30% (vehicles half-empty)</div>
         <div class='ins-li'><strong>Traffic Exposure:</strong> Forced entry into peak-hour gridlock</div>
@@ -316,18 +317,19 @@ with col_r:
     <div class='ins-card ins-electric'>
         <div style='font-size:2.8rem;margin-bottom:.5rem;'>⚡</div>
         <div class='ins-title'>The Gridlock Advantage</div>
-        <div class='ins-metric m-electric'>−85%</div>
+        <div class='ins-metric m-electric'>−80%</div>
         <p class='ins-text'>
-            <strong>EVs reduce traffic penalty by 85%</strong> vs thermal in gridlock,
-            based on <strong>4,767 electric trips</strong>
-            (4,116 EV Van + 651 E-bike).
+            <strong>EVs absorb traffic stress 7× better than thermal</strong>: in heavy congestion,
+            ICE emissions increase by +55% while EVs only by +11%. The framework
+            adopts the CN/CLTC-trained EV model (n=160, R²=0.77) with a
+            <strong>+12.04% WLTP correction factor</strong> (Cheng et al. 2025).
         </p>
         <div class='ins-li'><strong>Zero Idling Loss:</strong> No energy burned at standstill</div>
         <div class='ins-li'><strong>Energy Recovery:</strong> 15–20% regenerated via braking</div>
-        <div class='ins-li'><strong>Thermal Gridlock:</strong> +250% emissions vs free-flow</div>
-        <div class='ins-li'><strong>EV Gridlock:</strong> only +38% consumption (A/C load)</div>
+        <div class='ins-li'><strong>Thermal Gridlock:</strong> +55% emissions vs free-flow</div>
+        <div class='ins-li'><strong>EV Gridlock:</strong> only +11% consumption</div>
         <div class='ins-foot' style='color:#95D5B2;'>
-            <strong>📡 Source: EU WLTP BEV specs · Mai et al. (2025) Scientific Data · EU grid 233 g/kWh (Eurostat 2024)</strong>
+            <strong>📡 Source: CN BEV specs · Mai et al. (2025) Scientific Data + CLTC→WLTP correction (Cheng et al. 2025) · EU grid 233 g/kWh (Eurostat 2024)</strong>
         </div>
     </div>""", unsafe_allow_html=True)
 
@@ -344,7 +346,7 @@ with f1:
         <div class='f-icon'>🚗</div>
         <div class='f-title'>Fleet Impact Simulator</div>
         <p class='f-desc'>
-            AI predictions via Gradient Boosting (ICE, R²=0.79) and Ridge+Poly(2) (EV, R²≈0.77).
+            AI predictions via Gradient Boosting (ICE, R²=0.74) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.77, +12.04% WLTP correction).
             Simulate 6 vehicle types × 4 SLA levels with real physics parameters and EU ETS carbon pricing.
         </p>
     </div>""", unsafe_allow_html=True)
@@ -355,7 +357,7 @@ with f2:
         <div class='f-icon'>🔬</div>
         <div class='f-title'>SHAP Causal Analysis</div>
         <p class='f-desc'>
-            SHapley Additive exPlanations open the ICE model black-box. 
+            SHapley Additive exPlanations open the ICE model black-box.
             Identifies the exact contribution of speed, acceleration and engine stress to the Same-Day CO₂ penalty.
         </p>
     </div>""", unsafe_allow_html=True)
@@ -411,7 +413,7 @@ fleet = pd.DataFrame({
     "Trips":    [4187, 4145, 2080, 4116, 651, 412],
     "Propulsion": ["Thermal", "Thermal", "Thermal",
                    "Electric", "Electric", "Human"],
-    "CO₂ g/km": [220, 600, 65, 35, 8, 21],
+    "CO₂ g/km": [185, 600, 65, 40, 8, 21],
 })
 
 # Palette interamente verde: thermal=verde scuro, electric=verde medio, human=verde chiaro
@@ -453,7 +455,7 @@ fig.update_layout(
     font=dict(family="Inter", color="#D8F3DC", size=13),
     showlegend=False,
     title=dict(
-        text="15,591 total trips — breakdown by vehicle type",
+        text="Archetypal fleet breakdown — vehicle distribution across last-mile use cases",
         font=dict(size=14, color="#95D5B2"),
     ),
     xaxis=dict(
