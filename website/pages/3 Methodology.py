@@ -28,6 +28,7 @@ def render_navigation(current_page="Methods"):
         unsafe_allow_html=True,
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
+    
     # Sostituisci la vecchia definizione di "cols" con questa:
     # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e c'entra i 5 bottoni
     sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
@@ -268,7 +269,7 @@ st.markdown("""
             <td><span class='mono-tag'>NB02</span></td>
             <td><strong>Model Training & Validation</strong></td>
             <td><span class='mono-tag'>model_thermal_co2.pkl · model_ev_eu_efficiency.pkl</span></td>
-            <td>Trains <strong>GradientBoosting</strong> (ICE, R²=0.74) on OBD-II telemetry and <strong>Ridge+PolynomialFeatures(2)</strong> (EV, R²=0.77) on the CN/CLTC sub-sample (n=160) of Mai et al. 2025, with a +12.04% CLTC→WLTP correction factor (Cheng et al. 2025). Iterative feature engineering across 7 model versions. EV Trip data (evtripdata.csv) was excluded due to algebraic data leakage; the EU/WLTP sub-sample (n=46) was retained only as cycle-correction reference, due to insufficient sample size for direct deployment.</td>
+            <td>Trains <strong>GradientBoosting</strong> (ICE, R²=0.74) on OBD-II telemetry and <strong>Ridge+PolynomialFeatures(2)</strong> (EV, R²=0.82 in 5-fold CV) on the CN/CLTC sub-sample (n=160) of Mai et al. 2025, with a +12.04% CLTC→WLTP correction factor (Cheng et al. 2025). Iterative feature engineering across 7 model versions. EV Trip data (evtripdata.csv) was excluded due to algebraic data leakage; the EU/WLTP sub-sample (n=46) was retained only as cycle-correction reference, due to insufficient sample size for direct deployment.</td>
         </tr>
         <tr>
             <td><span class='mono-tag'>NB03</span></td>
@@ -304,7 +305,7 @@ st.markdown("""
             <td><span class='mono-tag'>NB08</span></td>
             <td><strong>Amazon LMRRC Validation</strong></td>
             <td><span class='mono-tag'>amazon_sim_results.csv</span></td>
-            <td>External robustness check on <strong>904,527 real Amazon stops</strong> across 6,112 routes in 5 US cities. Haversine × 1.35 road-factor for realistic last-mile distances. Confirms H1 pattern generalises to a Western, large-scale dataset.</td>
+            <td>External robustness check on <strong>904,527 real Amazon stops</strong> across 6,112 routes in 5 US cities. Haversine × 1.35 road-tortuosity factor for realistic last-mile distances. Confirms H1 pattern generalises to a Western, large-scale dataset.</td>
         </tr>
         <tr>
             <td><span class='mono-tag'>NB09</span></td>
@@ -397,7 +398,7 @@ with m2:
         <p><strong>Why:</strong> With only ~80–160 certified BEV variants, tree-based models overfit severely (Δ train-test ≈ 0.32). Ridge regression with degree-2 polynomial features generalises better on small, low-noise technical datasets.</p>
         <div style='margin-top:1rem;'>
             <span class='mono-tag'>Target: Wh/km (Energy consumption)</span>
-            <span class='mono-tag'>R²: ≈0.77</span>
+            <span class='mono-tag'>R²: 0.82 (5-fold CV)</span>
         </div>
         <p style='color:#95D5B2; font-size:.85rem; margin-top:.8rem;'>
             Dataset: Mai et al. (2025) <em>Scientific Data</em> 12, 1449 — CN_VAC_2023 (CLTC, n=160 BEV variants) as operational predictor, rescaled by +12.04% to align with WLTP (Cheng et al. 2025). EU_Variant_2023 (WLTP, n=46) used as cycle-correction reference only (insufficient sample size). Grid intensity: 233 g CO₂/kWh (EU 2024, Eurostat).
