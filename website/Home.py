@@ -42,18 +42,16 @@ def render_navigation(current_page="Home"):
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
 
-    cols = st.columns(6)
-    # Sostituisci la vecchia definizione di "cols" con questa:
-    # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e c'entra i 5 bottoni
+    # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e centra i 5 bottoni
     sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
     cols = [c1, c2, c3, c4, c5] # Passiamo solo le colonne centrali al ciclo for
 
     nav = [
-        ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
-        ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
-        ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
-        ("📚 Methods",   "Methods",   "pages/3 Methodology.py"),
+        (" Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
+        (" Topology",  "Topology",  "pages/6 Topological Analysis.py"),
+        (" Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
+        (" Glossary",  "Glossary",  "pages/4 Glossary.py"),
+        (" Methods",   "Methods",   "pages/3 Methodology.py"),
     ]
 
     for col, (label, key, page) in zip(cols, nav):
@@ -232,13 +230,13 @@ st.markdown("""
         trained on <span class='hero-hi'>real OBD-II telemetry</span> and validated on
         <span class='hero-hi'>25,000 simulated logistics trips</span>.
     </p>
-    <span class='badge'>🔬 2 ML Models (ICE R²=0.74 · EV R²=0.77)</span>
-    <span class='badge'>🚛 6 Vehicle Types</span>
-    <span class='badge'>⚡ 4 SLA Profiles</span>
-    <span class='badge'>📊 25,000 Simulated Logistics Trips</span>
-    <span class='badge'>🌐 904k Amazon Validation Stops</span>
-    <span class='badge'>🤖 Agentic AI Dispatch (Gemini)</span>
-    <span class='badge'>🗺️ Real Road Topology (OpenStreetMap)</span>
+    <span class='badge'> 2 ML Models (ICE R²=0.74 · EV R²=0.82)</span>
+    <span class='badge'> 6 Vehicle Types</span>
+    <span class='badge'> 4 SLA Profiles</span>
+    <span class='badge'> 25,000 Simulated Logistics Trips</span>
+    <span class='badge'> 904k Amazon Validation Stops</span>
+    <span class='badge'> Agentic AI Dispatch (Gemini)</span>
+    <span class='badge'> Real Road Topology (OpenStreetMap)</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -250,7 +248,7 @@ c1, c2, c3, c4 = st.columns(4)
 with c1:
     st.markdown("""
     <div class='stat-box'>
-        <div class='s-icon'>🚛</div>
+        <div class='s-icon'>🚗</div>
         <div class='s-num'>25,000</div>
         <div class='s-label'>Simulated Trips</div>
         <div class='s-detail'>Synthetic India Logistics dataset · NB01</div>
@@ -259,9 +257,9 @@ with c1:
 with c2:
     st.markdown("""
     <div class='stat-box'>
-        <div class='s-icon'>🤖</div>
-        <div class='s-num'>0.77</div>
-        <div class='s-label'>EV Model R²</div>
+        <div class='s-icon'>📈</div>
+        <div class='s-num'>0.82</div>
+        <div class='s-label'>EV Model R² (5-fold CV)</div>
         <div class='s-detail'>Ridge+Poly(2) · CN BEV specs n=160 (Mai et al. 2025) + 12.04% WLTP correction (Cheng et al. 2025)</div>
     </div>""", unsafe_allow_html=True)
 
@@ -286,7 +284,7 @@ with c4:
 # ========================================================================
 # RESEARCH FINDINGS  — 2 colonne Streamlit, una card per colonna
 # ========================================================================
-st.markdown("<h2 class='sec-h'>💡 Research Findings</h2>", unsafe_allow_html=True)
+st.markdown("<h2 class='sec-h'> Research Findings</h2>", unsafe_allow_html=True)
 
 col_l, col_r = st.columns(2, gap="large")
 
@@ -308,20 +306,20 @@ with col_l:
         <div class='ins-li'><strong>Engine Stress:</strong> +40% RPM × Load vs Standard</div>
         <div class='ins-li'><strong>Distance Penalty:</strong> Fragmented routing (+30% total km)</div>
         <div class='ins-foot' style='color:#95D5B2;'>
-            <strong>📡 Source: OBD-II telemetry · Fiat Ducato / Ford Transit fleet (real data)</strong>
+            <strong> Source: OBD-II telemetry · Fiat Ducato / Ford Transit fleet (real data)</strong>
         </div>
     </div>""", unsafe_allow_html=True)
 
 with col_r:
     st.markdown("""
     <div class='ins-card ins-electric'>
-        <div style='font-size:2.8rem;margin-bottom:.5rem;'>⚡</div>
+        <div style='font-size:2.8rem;margin-bottom:.5rem;'>🔋</div>
         <div class='ins-title'>The Gridlock Advantage</div>
         <div class='ins-metric m-electric'>−80%</div>
         <p class='ins-text'>
             <strong>EVs absorb traffic stress 7× better than thermal</strong>: in heavy congestion,
             ICE emissions increase by +55% while EVs only by +11%. The framework
-            adopts the CN/CLTC-trained EV model (n=160, R²=0.77) with a
+            adopts the CN/CLTC-trained EV model (n=160, R²=0.82 5-fold CV) with a
             <strong>+12.04% WLTP correction factor</strong> (Cheng et al. 2025).
         </p>
         <div class='ins-li'><strong>Zero Idling Loss:</strong> No energy burned at standstill</div>
@@ -329,24 +327,24 @@ with col_r:
         <div class='ins-li'><strong>Thermal Gridlock:</strong> +55% emissions vs free-flow</div>
         <div class='ins-li'><strong>EV Gridlock:</strong> only +11% consumption</div>
         <div class='ins-foot' style='color:#95D5B2;'>
-            <strong>📡 Source: CN BEV specs · Mai et al. (2025) Scientific Data + CLTC→WLTP correction (Cheng et al. 2025) · EU grid 233 g/kWh (Eurostat 2024)</strong>
+            <strong> Source: CN BEV specs · Mai et al. (2025) Scientific Data + CLTC→WLTP correction (Cheng et al. 2025) · EU grid 233 g/kWh (Eurostat 2024)</strong>
         </div>
     </div>""", unsafe_allow_html=True)
 
 # ========================================================================
 # PLATFORM CAPABILITIES  — 3 colonne Streamlit
 # ========================================================================
-st.markdown("<h2 class='sec-h'>🎯 Platform Capabilities</h2>", unsafe_allow_html=True)
+st.markdown("<h2 class='sec-h'> Platform Capabilities</h2>", unsafe_allow_html=True)
 
 f1, f2, f3 = st.columns(3, gap="large")
 
 with f1:
     st.markdown("""
     <div class='feat-card'>
-        <div class='f-icon'>🚗</div>
+        <div class='f-icon'>💻</div>
         <div class='f-title'>Fleet Impact Simulator</div>
         <p class='f-desc'>
-            AI predictions via Gradient Boosting (ICE, R²=0.74) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.77, +12.04% WLTP correction).
+            AI predictions via Gradient Boosting (ICE, R²=0.74) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.82 5-fold CV, +12.04% WLTP correction).
             Simulate 6 vehicle types × 4 SLA levels with real physics parameters and EU ETS carbon pricing.
         </p>
     </div>""", unsafe_allow_html=True)
@@ -354,7 +352,7 @@ with f1:
 with f2:
     st.markdown("""
     <div class='feat-card'>
-        <div class='f-icon'>🔬</div>
+        <div class='f-icon'>🔍</div>
         <div class='f-title'>SHAP Causal Analysis</div>
         <p class='f-desc'>
             SHapley Additive exPlanations open the ICE model black-box.
@@ -380,7 +378,7 @@ with f4:
 with f5:
     st.markdown("""
     <div class='feat-card'>
-        <div class='f-icon'>🌐</div>
+        <div class='f-icon'>📦</div>
         <div class='f-title'>Amazon LMRRC Validation</div>
         <p class='f-desc'>
             External robustness check: EcoFleet models applied to 904,527 real Amazon stops across 5 US cities.
@@ -405,7 +403,7 @@ with f6:
 # dei singoli veicoli → struttura confusa. Sostituito con bar chart orizzontale
 # raggruppato per propulsione — più chiaro e informativo.
 # ========================================================================
-st.markdown("<h2 class='sec-h'>🚛 Fleet Composition</h2>", unsafe_allow_html=True)
+st.markdown("<h2 class='sec-h'> Fleet Composition</h2>", unsafe_allow_html=True)
 
 fleet = pd.DataFrame({
     "Vehicle":  ["Thermal Van", "Thermal Truck", "Thermal Scooter",
@@ -479,7 +477,7 @@ with leg1:
     st.markdown("""
     <div style='text-align:center; padding:.8rem; background:rgba(27,67,50,.4);
     border-radius:8px; border:1px solid rgba(82,183,136,.2);'>
-        <span style='font-size:1.4rem;'>🔥</span><br>
+        <span style='font-size:1.4rem;'></span><br>
         <strong style='color:#D8F3DC;'>Thermal (ICE)</strong><br>
         <span style='color:#95D5B2;font-size:.85rem;'>10,412 trips · 67%</span>
     </div>""", unsafe_allow_html=True)
@@ -487,7 +485,7 @@ with leg2:
     st.markdown("""
     <div style='text-align:center; padding:.8rem; background:rgba(27,67,50,.4);
     border-radius:8px; border:1px solid rgba(82,183,136,.2);'>
-        <span style='font-size:1.4rem;'>⚡</span><br>
+        <span style='font-size:1.4rem;'></span><br>
         <strong style='color:#D8F3DC;'>Electric (EV)</strong><br>
         <span style='color:#95D5B2;font-size:.85rem;'>4,767 trips · 31%</span>
     </div>""", unsafe_allow_html=True)
@@ -495,7 +493,7 @@ with leg3:
     st.markdown("""
     <div style='text-align:center; padding:.8rem; background:rgba(27,67,50,.4);
     border-radius:8px; border:1px solid rgba(82,183,136,.2);'>
-        <span style='font-size:1.4rem;'>🚲</span><br>
+        <span style='font-size:1.4rem;'></span><br>
         <strong style='color:#D8F3DC;'>Human Power</strong><br>
         <span style='color:#95D5B2;font-size:.85rem;'>412 trips · 2.6%</span>
     </div>""", unsafe_allow_html=True)
@@ -505,16 +503,16 @@ with leg3:
 # ========================================================================
 st.markdown("""
 <div class='cta-box'>
-    <div class='cta-t'>🚀 Start Exploring</div>
+    <div class='cta-t'> Start Exploring</div>
     <p class='cta-s'>Use AI-powered tools to simulate scenarios and analyse real fleet data</p>
 </div>""", unsafe_allow_html=True)
 
 b1, b2, b3 = st.columns(3)
 with b1:
-    if st.button("🚗 Launch Simulator", use_container_width=True):
+    if st.button(" Launch Simulator", use_container_width=True):
         st.switch_page("pages/1 Fleet Impact Simulator.py")
 with b2:
-    if st.button("📚 Read Methodology", use_container_width=True):
+    if st.button(" Read Methodology", use_container_width=True):
         st.switch_page("pages/3 Methodology.py")
 
 # ========================================================================
