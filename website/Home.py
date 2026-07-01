@@ -230,7 +230,7 @@ st.markdown("""
         trained on <span class='hero-hi'>real OBD-II telemetry</span> and validated on
         <span class='hero-hi'>25,000 simulated logistics trips</span>.
     </p>
-    <span class='badge'> 2 ML Models (ICE R²=0.74 · EV R²=0.82)</span>
+    <span class='badge'> 2 ML Models (ICE R²=0.74 · EV R²=0.77)</span>
     <span class='badge'> 6 Vehicle Types</span>
     <span class='badge'> 4 SLA Profiles</span>
     <span class='badge'> 25,000 Simulated Logistics Trips</span>
@@ -258,7 +258,7 @@ with c2:
     st.markdown("""
     <div class='stat-box'>
         <div class='s-icon'>📈</div>
-        <div class='s-num'>0.82</div>
+        <div class='s-num'>0.77</div>
         <div class='s-label'>EV Model R² (5-fold CV)</div>
         <div class='s-detail'>Ridge+Poly(2) · CN BEV specs n=160 (Mai et al. 2025) + 12.04% WLTP correction (Cheng et al. 2025)</div>
     </div>""", unsafe_allow_html=True)
@@ -319,7 +319,7 @@ with col_r:
         <p class='ins-text'>
             <strong>EVs absorb traffic stress 7× better than thermal</strong>: in heavy congestion,
             ICE emissions increase by +55% while EVs only by +11%. The framework
-            adopts the CN/CLTC-trained EV model (n=160, R²=0.82 5-fold CV) with a
+            adopts the CN/CLTC-trained EV model (n=160, R²=0.77 5-fold CV) with a
             <strong>+12.04% WLTP correction factor</strong> (Cheng et al. 2025).
         </p>
         <div class='ins-li'><strong>Zero Idling Loss:</strong> No energy burned at standstill</div>
@@ -344,7 +344,7 @@ with f1:
         <div class='f-icon'>💻</div>
         <div class='f-title'>Fleet Impact Simulator</div>
         <p class='f-desc'>
-            AI predictions via Gradient Boosting (ICE, R²=0.74) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.82 5-fold CV, +12.04% WLTP correction).
+            AI predictions via Gradient Boosting (ICE, R²=0.74) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.77 5-fold CV, +12.04% WLTP correction).
             Simulate 6 vehicle types × 4 SLA levels with real physics parameters and EU ETS carbon pricing.
         </p>
     </div>""", unsafe_allow_html=True)
