@@ -20,38 +20,33 @@ st.set_page_config(
 def render_navigation(current_page="Home"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
-        '<g transform="translate(5, 12)">'
-        '<rect x="8" y="8" width="18" height="12" fill="#2D6A4F" rx="2"/>'
+        '<g transform="translate(5, 12)"><rect x="8" y="8" width="18" height="12" fill="#2D6A4F" rx="2"/>'
         '<rect x="0" y="12" width="8" height="8" fill="#40916C" rx="1"/>'
-        '<circle cx="8" cy="22" r="3" fill="#1B4332"/>'
-        '<circle cx="22" cy="22" r="3" fill="#1B4332"/>'
-        '<ellipse cx="22" cy="8" rx="3" ry="4" fill="#95D5B2" opacity="0.7"/>'
-        '</g>'
+        '<circle cx="8" cy="22" r="3" fill="#1B4332"/><circle cx="22" cy="22" r="3" fill="#1B4332"/>'
+        '<ellipse cx="22" cy="8" rx="3" ry="4" fill="#95D5B2" opacity="0.7"/></g>'
         '<text x="45" y="20" font-size="18" font-weight="700" fill="#95D5B2">Eco</text>'
         '<text x="45" y="38" font-size="18" font-weight="700" fill="#FFFFFF">Fleet</text>'
-        '<text x="100" y="32" font-size="11" fill="#95D5B2">Analytics</text>'
-        '</svg>'
+        '<text x="100" y="32" font-size="11" fill="#95D5B2">Analytics</text></svg>'
     )
     st.markdown(
-        "<style>"
-        "[data-testid='stSidebar']{display:none;}"
+        "<style>[data-testid='stSidebar']{display:none;}"
         ".nav-bar{background:linear-gradient(90deg,#081C15,#1B4332,#2D6A4F);"
-        "padding:1rem 2rem;margin:-1rem -1rem 0 -1rem;border-bottom:3px solid #52B788;}"
-        "</style>",
+        "padding:1rem 2rem;margin:-1rem -1rem 0 -1rem;border-bottom:3px solid #52B788;}</style>",
         unsafe_allow_html=True,
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
+    
+    sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
+    cols = [c1, c2, c3, c4, c5, c6] 
 
-    # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e centra i 5 bottoni
-    sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5] # Passiamo solo le colonne centrali al ciclo for
-
+    # Aggiornato con il nome "Results" e un'icona a grafico (📊)
     nav = [
-        (" Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        (" Topology",  "Topology",  "pages/6 Topological Analysis.py"),
-        (" Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
-        (" Glossary",  "Glossary",  "pages/4 Glossary.py"),
-        (" Methods",   "Methods",   "pages/3 Methodology.py"),
+        ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
+        ("📊 Results",   "Results",   "pages/2 Result Analysis.py"), # Lasciato "pages/2 Economics.py" come file, ma modificato il testo
+        ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
+        ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
+        ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
+        ("📚 Methods",   "Methods",   "pages/3 Methodology.py"),
     ]
 
     for col, (label, key, page) in zip(cols, nav):
@@ -59,7 +54,6 @@ def render_navigation(current_page="Home"):
             if st.button(label, use_container_width=True,
                         type="primary" if current_page == key else "secondary"):
                 st.switch_page(page)
-
 render_navigation("Home")
 
 # ========================================================================
