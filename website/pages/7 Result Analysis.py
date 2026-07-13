@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="Economic Strategy | EcoFleet Analytics",
-    page_icon="",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -33,7 +33,7 @@ def render_navigation(current_page="Results"):
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("📊 Results",   "Results",   "pages/2 Economics.py"), 
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -60,21 +60,27 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 .sec-h { font-size:1.5rem; font-weight:700; color:#95D5B2; margin:3rem 0 .6rem 0; padding-bottom:.5rem; border-bottom:1px solid rgba(82,183,136,0.25); }
 .sec-explain { font-size:.95rem; color:#95D5B2; opacity:.8; line-height:1.6; margin-bottom:1.5rem; }
 .nm-badge { display:inline-block; background:rgba(82,183,136,0.15); border:1px solid #52B788; border-radius:20px; padding:.4rem 1.1rem; margin-bottom:1rem; font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px; color:#95D5B2; }
-.line-wrap { margin:1rem 0 2.5rem 0; }
-.line-track { position:relative; height:6px; border-radius:3px; margin:4rem 8rem 3rem 8rem; }
+
+/* MODIFICHE QUI: Aumentati i margini e le distanze per evitare accavallamenti del testo */
+.line-wrap { margin:1rem 0 3.5rem 0; }
+.line-track { position:relative; height:6px; border-radius:3px; margin: 6rem 8rem 4rem 8rem; }
 .line-risk { background:linear-gradient(90deg,#F9C74F,#E65100); }
 .line-opp { background:linear-gradient(90deg,#74C69D,#1B7A4B); }
 .pole { position:absolute; top:-5px; width:16px; height:16px; border-radius:50%; border:3px solid #0D1F17; transform:translate(-50%,0); }
 .pole.left{left:0;} .pole.right{left:100%;} .pole.mid{left:50%; opacity:.6; width:12px; height:12px; top:-3px;}
 .pole-risk-l{background:#F9C74F;} .pole-risk-r{background:#E65100;} .pole-risk-m{background:#F3903F;}
 .pole-opp-l{background:#74C69D;} .pole-opp-r{background:#1B7A4B;}
-.plabel { position:absolute; width:200px; text-align:center; transform:translateX(-50%); }
+
+/* Etichette distanziate maggiormente dalla linea */
+.plabel { position:absolute; width:220px; text-align:center; transform:translateX(-50%); }
 .plabel.left{left:0;} .plabel.right{left:100%;}
-.plabel.top{top:-3.6rem;} .plabel.bottom{top:1.3rem;}
+.plabel.top{top:-5.5rem;} /* Pinge il testo superiore molto più in alto */
+.plabel.bottom{top:1.8rem;} /* Pinge il testo inferiore più in basso */
 .plabel .val { font-size:1.9rem; font-weight:800; line-height:1.1; }
-.plabel .desc { font-size:.8rem; color:#95D5B2; opacity:.85; line-height:1.35; margin-top:.2rem; }
+.plabel .desc { font-size:.82rem; color:#95D5B2; opacity:.85; line-height:1.4; margin-top:.3rem; }
+
 .risk .val{color:#FF8A50;} .opp .val{color:#95D5B2;}
-.co2-note { font-size:.85rem; color:#95D5B2; opacity:.9; margin-top:.5rem; border-left:2px solid rgba(82,183,136,0.4); padding-left:.8rem; line-height:1.5; }
+.co2-note { font-size:.85rem; color:#95D5B2; opacity:.9; margin-top:2.5rem; border-left:2px solid rgba(82,183,136,0.4); padding-left:.8rem; line-height:1.5; }
 .capex-tbl { width:100%; border-collapse:collapse; font-size:.9rem; }
 .capex-tbl th { color:#52B788; text-align:left; padding:.6rem .5rem; border-bottom:1px solid rgba(82,183,136,0.3); font-family:'JetBrains Mono',monospace; font-size:.75rem; letter-spacing:1px; text-transform:uppercase; }
 .capex-tbl td { padding:.6rem .5rem; border-bottom:1px solid rgba(82,183,136,0.1); color:#D8F3DC; }
@@ -108,13 +114,13 @@ st.markdown(
 st.markdown("""
 <div class='line-wrap'>
   <div class='line-track line-risk'>
-    <div class='plabel left top risk'><div class='val'>€3.2M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>at today's carbon price<br>(65 €/tonne, 2024)</div></div>
-    <div class='plabel right top risk'><div class='val'>€7.3M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>in the 2030 scenario<br>(150 €/tonne)</div></div>
+    <div class='plabel left top risk'><div class='val'>€3.2M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>Today's carbon price<br>(65 €/tonne, 2024)</div></div>
+    <div class='plabel right top risk'><div class='val'>€7.3M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>2030 scenario<br>(150 €/tonne)</div></div>
     <div class='pole left pole-risk-l'></div>
     <div class='pole mid pole-risk-m'></div>
     <div class='pole right pole-risk-r'></div>
-    <div class='plabel left bottom'><div class='desc'>bad</div></div>
-    <div class='plabel right bottom'><div class='desc'>much worse</div></div>
+    <div class='plabel left bottom'><div class='desc'>Bad</div></div>
+    <div class='plabel right bottom'><div class='desc'>Much worse</div></div>
     <div class='plabel bottom' style='left:50%;'><div class='desc' style='opacity:.6;'>€4.9M · 2027–28 (100 €/tonne)</div></div>
   </div>
 </div>
@@ -130,12 +136,12 @@ st.markdown(
 st.markdown("""
 <div class='line-wrap'>
   <div class='line-track line-opp'>
-    <div class='plabel left top opp'><div class='val'>€2.3M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>just by renegotiating deadlines<br>(no money spent)</div></div>
-    <div class='plabel right top opp'><div class='val'>€12.85M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>by going 100% electric</div></div>
+    <div class='plabel left top opp'><div class='val'>€2.3M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>Renegotiating deadlines<br>(no money spent)</div></div>
+    <div class='plabel right top opp'><div class='val'>€12.85M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>Going 100% electric</div></div>
     <div class='pole left pole-opp-l'></div>
     <div class='pole right pole-opp-r'></div>
-    <div class='plabel left bottom'><div class='desc'>free &amp; immediate</div></div>
-    <div class='plabel right bottom'><div class='desc'>full transition</div></div>
+    <div class='plabel left bottom'><div class='desc'>Free & immediate</div></div>
+    <div class='plabel right bottom'><div class='desc'>Full transition</div></div>
   </div>
 </div>
 <div class='co2-note'> At the top end, the fleet avoids <b>541,800 kg of CO₂ every day</b> versus staying diesel.</div>
@@ -171,16 +177,25 @@ with chart_col:
     fig.add_annotation(x=75, y=60, yref="y1", text="◆ sweet spot", showarrow=False,
                        font=dict(color="#F9C74F", size=13), bgcolor="rgba(13,31,23,0.9)",
                        bordercolor="#F9C74F", borderwidth=1, yshift=25)
+    
+    # MODIFICHE PLOTLY QUI: Sistematica la sintassi di title e font per evitare il ValueError
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#D8F3DC", family="Inter"),
         xaxis=dict(title="Share of electric vehicles", showgrid=False, tickvals=ev_share, ticksuffix="%"),
-        yaxis=dict(title="CO₂ cut (%)", gridcolor="rgba(82,183,136,0.15)", ticksuffix="%",
-                   titlefont=dict(color="#52B788"), tickfont=dict(color="#52B788")),
-        yaxis2=dict(title="Upfront cost (M€)", overlaying="y", side="right", showgrid=False,
-                    ticksuffix="M", titlefont=dict(color="#E65100"), tickfont=dict(color="#E65100")),
+        yaxis=dict(
+            title=dict(text="CO₂ cut (%)", font=dict(color="#52B788")),
+            gridcolor="rgba(82,183,136,0.15)", ticksuffix="%",
+            tickfont=dict(color="#52B788")
+        ),
+        yaxis2=dict(
+            title=dict(text="Upfront cost (M€)", font=dict(color="#E65100")),
+            overlaying="y", side="right", showgrid=False,
+            ticksuffix="M", tickfont=dict(color="#E65100")
+        ),
         height=380, margin=dict(l=20, r=20, t=30, b=20),
-        legend=dict(orientation="h", y=1.14, x=0, font=dict(size=11)))
+        legend=dict(orientation="h", y=1.14, x=0, font=dict(size=11))
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 with table_col:
