@@ -42,7 +42,7 @@ def render_navigation(current_page="Home"):
     # Aggiornato con il nome "Results" e un'icona a grafico (📊)
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("📊 Results",   "Results",   "pages/2 Result Analysis.py"), # Lasciato "pages/2 Economics.py" come file, ma modificato il testo
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), # Lasciato "pages/2 Economics.py" come file, ma modificato il testo
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
