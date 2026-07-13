@@ -8,7 +8,8 @@ st.set_page_config(
 )
 
 # ── Navigation ─────────────────────────────────────────────────────────
-def render_navigation(current_page="Glossary"):
+# ── Navigation ─────────────────────────────────────────────────────────
+def render_navigation(current_page="Results"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
         '<g transform="translate(5, 12)"><rect x="8" y="8" width="18" height="12" fill="#2D6A4F" rx="2"/>'
@@ -27,12 +28,12 @@ def render_navigation(current_page="Glossary"):
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
     
-    # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e c'entra i 5 bottoni
-    sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5] # Passiamo solo le colonne centrali al ciclo for
+    sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
+    cols = [c1, c2, c3, c4, c5, c6] 
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -45,7 +46,7 @@ def render_navigation(current_page="Glossary"):
                         type="primary" if current_page == key else "secondary"):
                 st.switch_page(page)
 
-render_navigation("Glossary")
+render_navigation("Results")
 
 # ── CSS ────────────────────────────────────────────────────────────────
 # Tema: sfondo verde molto chiaro (#E8F5E9), testo dark-green
