@@ -29,7 +29,8 @@ GLOBAL_DIESEL_CO2 = 2.640      # kg CO₂/L (IPCC Standard, coerente con tutti i
 GLOBAL_SCC = 80.0              # €/tonne (Global Social Cost of Carbon benchmark)
 
 # ── Navigation ─────────────────────────────────────────────────────────
-def render_navigation(current_page="Simulator"):
+# ── Navigation ─────────────────────────────────────────────────────────
+def render_navigation(current_page="Results"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
         '<g transform="translate(5, 12)"><rect x="8" y="8" width="18" height="12" fill="#2D6A4F" rx="2"/>'
@@ -48,11 +49,12 @@ def render_navigation(current_page="Simulator"):
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
     
-    sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5] 
+    sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
+    cols = [c1, c2, c3, c4, c5, c6] 
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -65,8 +67,7 @@ def render_navigation(current_page="Simulator"):
                         type="primary" if current_page == key else "secondary"):
                 st.switch_page(page)
 
-render_navigation("Simulator")
-
+render_navigation("Results")
 # ── Load dynamic KPIs produced by NB06 (fleet_kpis.json) ───────────────
 @st.cache_data
 def load_dynamic_kpis():
