@@ -11,7 +11,8 @@ st.set_page_config(
 )
 
 # ── Navigation ─────────────────────────────────────────────────────────
-def render_navigation(current_page="Fleet"):
+# ── Navigation ─────────────────────────────────────────────────────────
+def render_navigation(current_page="Results"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
         '<g transform="translate(5, 12)"><rect x="8" y="8" width="18" height="12" fill="#2D6A4F" rx="2"/>'
@@ -28,13 +29,14 @@ def render_navigation(current_page="Fleet"):
         "padding:1rem 2rem;margin:-1rem -1rem 0 -1rem;border-bottom:3px solid #52B788;}</style>",
         unsafe_allow_html=True,
     )
-    # Sostituisci la vecchia definizione di "cols" con questa:
-    # [0.5, 1, 1, 1, 1, 1, 0.5] crea spazio ai bordi e c'entra i 5 bottoni
-    sp1, c1, c2, c3, c4, c5, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5] # Passiamo solo le colonne centrali al ciclo for
+    st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
+    
+    sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
+    cols = [c1, c2, c3, c4, c5, c6] 
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
