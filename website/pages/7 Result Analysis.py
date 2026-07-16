@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="Economic Strategy | EcoFleet Analytics",
-    page_icon="📊",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -27,17 +27,17 @@ def render_navigation(current_page="Results"):
         unsafe_allow_html=True,
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
-    
+   
     sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5, c6] 
+    cols = [c1, c2, c3, c4, c5, c6]
 
     nav = [
-        ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
-        ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
-        ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
-        ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
-        ("📚 Methods",   "Methods",   "pages/3 Methodology.py"),
+        (" Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
+        (" Results",   "Results",   "pages/7 Result Analysis.py"),
+        (" Topology",  "Topology",  "pages/6 Topological Analysis.py"),
+        (" Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
+        (" Glossary",  "Glossary",  "pages/4 Glossary.py"),
+        (" Methods",   "Methods",   "pages/3 Methodology.py"),
     ]
 
     for col, (label, key, page) in zip(cols, nav):
@@ -149,9 +149,11 @@ st.markdown("""
 
 st.markdown("<div class='sec-h'>3 · How far to go electric: cost vs. benefit</div>", unsafe_allow_html=True)
 st.markdown(
-    "<div class='sec-explain'>Each step of electrification cuts more CO₂ — but also costs more upfront. "
-    "The smart stopping point is <b>75%</b>: it cuts emissions by 60% while keeping the flexibility of a mixed fleet. "
-    "Going all the way to 100% costs another ~6 M€ for little extra strategic gain.</div>",
+    "<div class='sec-explain'>Each 25% of electrification cuts the same slice of CO₂ — the emissions curve is linear, "
+    "all the way to 100%. So why stop at <b>75%</b>? Because that's where the <i>strategic</i> value peaks: below 75%, "
+    "electric vans go where they help most — congested urban zones. Beyond it, you'd electrify quiet routes where the "
+    "advantage fades, and you'd lose the commercial lever of renegotiating deadlines. The last 25% costs ~6 M€ more "
+    "for pure replacement, not smart strategy.</div>",
     unsafe_allow_html=True
 )
 
@@ -174,10 +176,10 @@ with chart_col:
         marker=dict(size=9, color="#E65100", line=dict(width=2, color="#0D1F17")),
         hovertemplate="%{x}% electric → ~%{y} M€ upfront<extra></extra>"))
     fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.5)
-    fig.add_annotation(x=75, y=60, yref="y1", text="◆ sweet spot", showarrow=False,
+    fig.add_annotation(x=75, y=60, yref="y1", text="◆ strategic optimum", showarrow=False,
                        font=dict(color="#F9C74F", size=13), bgcolor="rgba(13,31,23,0.9)",
                        bordercolor="#F9C74F", borderwidth=1, yshift=25)
-    
+   
     # MODIFICHE PLOTLY QUI: Sistematica la sintassi di title e font per evitare il ValueError
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
@@ -209,9 +211,9 @@ with table_col:
         <tr><td>100%</td><td>−80%</td><td>~€22M</td></tr>
     </table>
     <div class='co2-note' style='margin-top:1rem;'>
-        Every 25% electrified cuts the same 20% of CO₂ — steady benefit.
-        But past 75% you lose the option to also use delivery-speed as a lever:
-        electric becomes pure replacement, not smart strategy.
+        Every 25% electrified cuts the same 20% of CO₂ — the benefit is perfectly steady.
+        The 75% mark isn't where CO₂ savings slow down; it's where you'd start losing strategic
+        optionality: beyond it, electric becomes forced replacement and you give up the delivery-speed lever.
     </div>
     """, unsafe_allow_html=True)
 
