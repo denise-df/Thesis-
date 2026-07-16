@@ -244,7 +244,7 @@ VEHICLE_COSTS = {
 
 def get_physics(traffic, sla, dist_km):
     t_map = {"Light": 1.0, "Moderate": 1.3, "Heavy": 1.8, "Gridlock": 2.5}
-    s_map = {"Standard": 1.0, "Next-Day": 1.1, "Express": 1.3, "Same-Day": 1.5}
+    s_map = {"Standard": 1.0, "Two-Day": 1.05, "Express": 1.28, "Same-Day": 1.55}
     stress   = t_map[traffic] * s_map[sla]
     avg_kmh  = max(5, 50 / stress)
     dur_h    = dist_km / avg_kmh
@@ -609,7 +609,7 @@ with tab_cost:
         cost_dist = st.slider("dist_cost", 1, 200, 50, label_visibility="collapsed")
 
     operational_cost = VEHICLE_COSTS[cost_veh] * cost_dist
-    sla_mult_map = {"Standard": 1.0, "Next-Day": 1.05, "Express": 1.20, "Same-Day": 1.40}
+    sla_mult_map = {"Standard": 1.0, "Two-Day": 1.05, "Express": 1.28, "Same-Day": 1.55}
     sla_mult = sla_mult_map[cost_sla_sel]
     total_ops_cost = operational_cost * sla_mult
 
