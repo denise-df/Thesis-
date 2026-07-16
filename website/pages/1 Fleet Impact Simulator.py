@@ -325,7 +325,7 @@ with tab_sim:
                                    value="Moderate", label_visibility="collapsed")
     with c3:
         st.markdown("<div class='ctrl-lbl'>📦 Service Level (SLA)</div>", unsafe_allow_html=True)
-        sla = st.select_slider("sla", ["Standard (3-5 days)","Next-Day (24-48h)","Express (<24h)","Same-Day (<4h)"],
+        sla = st.select_slider("sla", ["Standard (3-5 days)","Two-Day (24-48h)","Express (<24h)","Same-Day (<4h)"],
                                value="Standard (3-5 days)", label_visibility="collapsed")
         sla_clean = sla.split(' (')[0] if ' (' in sla else sla
     st.markdown("</div>", unsafe_allow_html=True)
@@ -382,9 +382,9 @@ with tab_sim:
 
         with r2:
             comp = []
-            sla_labels = {"Standard": "Standard (3-5 days)", "Next-Day": "Next-Day (24-48h)", 
+            sla_labels = {"Standard": "Standard (3-5 days)", "Two-Day": "Two-Day (24-48h)", 
                            "Express": "Express (<24h)", "Same-Day": "Same-Day (<4h)"}
-            for s_opt in ["Standard","Next-Day","Express","Same-Day"]:
+            for s_opt in ["Standard","Two-Day","Express","Same-Day"]:
                 comp.append({"SLA": sla_labels[s_opt], "CO₂ (kg)": calc_co2(st.session_state.sim_veh, traffic, s_opt, dist)})
             df_chart = pd.DataFrame(comp)
             colors = ["#E65100" if "Same-Day" in x else ("#52B788" if x == sla else "#40916C")
@@ -602,7 +602,7 @@ with tab_cost:
                                index=3, label_visibility="collapsed")
     with cc2:
         st.markdown("<div class='ctrl-lbl'>📦 Service Level (SLA)</div>", unsafe_allow_html=True)
-        cost_sla_sel = st.selectbox("sla_cost", ["Standard","Next-Day","Express","Same-Day"],
+        cost_sla_sel = st.selectbox("sla_cost", ["Standard","Two-Day","Express","Same-Day"],
                                index=0, label_visibility="collapsed")
     with cc3:
         st.markdown("<div class='ctrl-lbl'>📍 Distance (km)</div>", unsafe_allow_html=True)
