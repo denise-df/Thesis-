@@ -29,7 +29,6 @@ GLOBAL_DIESEL_CO2 = 2.640      # kg CO₂/L (IPCC Standard, coerente con tutti i
 GLOBAL_SCC = 80.0              # €/tonne (Global Social Cost of Carbon benchmark)
 
 # ── Navigation ─────────────────────────────────────────────────────────
-# ── Navigation ─────────────────────────────────────────────────────────
 def render_navigation(current_page="Results"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
@@ -67,7 +66,8 @@ def render_navigation(current_page="Results"):
                         type="primary" if current_page == key else "secondary"):
                 st.switch_page(page)
 
-render_navigation("Results")
+render_navigation("Simulator")
+
 # ── Load dynamic KPIs produced by NB06 (fleet_kpis.json) ───────────────
 @st.cache_data
 def load_dynamic_kpis():
@@ -425,14 +425,13 @@ with tab_sim:
         )
 
     st.markdown(f"""
-   st.markdown(f"""
     <div class='justification-box'>
         <div class='just-title'>🔍 Methodology & Scientific Foundations</div>
         <div class='just-text'>
             <p style='margin-bottom: 0.8rem;'>The emission estimates for this specific trip are not generic averages, but are built upon a <b>hybrid physics-ML architecture</b> specifically engineered for urban logistics dynamics:</p>
             <ul>
                 <li style='margin-bottom: 0.8rem;'><b>Physics-Informed Engine & Stress Factor:</b> For internal combustion engine (ICE) vehicles, we derive emissions by translating macro-logistics (traffic, SLA) into a kinematic <i>Stress Factor</i>. This drives the instantaneous thermodynamic stress captured by Engine_Stress (RPM &times; Load), the strongest single predictor in the model (45.9% of the mean SHAP contribution). Rather than a fixed formula, emissions are predicted by a Gradient Boosting model trained on Engine_Stress together with Kinetic_Power and Road_Grade — unlike standard distance-based multipliers, this approach mathematically captures the severe fuel penalties of <b>urban stop-and-go patterns</b> and extended engine idling.</li>
-                <li style='margin-bottom: 0.8rem;'><b>Machine Learning Core:</b> The baseline prediction is validated against a <b>Stochastic Gradient Boosting</b> model. This algorithm was trained and cross-validated on over 150,000 high-frequency (1 Hz) OBD-II telemetry records, achieving an out-of-sample R&sup2; of 0.74. Electric vehicle baselines utilize Ridge Regression trained on rigorous <b>EU WLTP certification data</b>, explicitly avoiding the optimistic bias often found in standard test cycles.</li>
+                <li style='margin-bottom: 0.8rem;'><b>Machine Learning Core:</b> The baseline prediction is validated against a <b>Stochastic Gradient Boosting</b> model. This algorithm was trained and cross-validated on over 150,000 high-frequency (1 Hz) OBD-II telemetry records, achieving an out-of-sample R&sup2; of 0.74 — chosen over a marginally more accurate Stacking Ensemble (R&sup2;=0.757) to preserve cross-validation stability and native compatibility with SHAP's TreeExplainer. Electric vehicle baselines utilize Ridge Regression trained on certified <b>CN/CLTC vehicle specification data</b>, rescaled with a WLTP correction factor (+12.04%) to align with European homologation standards, explicitly avoiding the optimistic bias often found in standard test cycles.</li>
                 <li><b>Global Constants:</b> To ensure geographical neutrality, calculations strictly utilize the <b>IEA Global Average Grid Intensity ({GLOBAL_GRID_INTENSITY} kg/kWh)</b> for EVs, and the official IPCC emission factor for Diesel ({GLOBAL_DIESEL_CO2} kg/L).</li>
             </ul>
         </div>
@@ -626,7 +625,6 @@ with tab_cost:
     r1_cost, r2_cost = st.columns([1.2, 1])
 
     with r1_cost:
-        # ABBIAMO CAMBIATO IL NUMERO GRANDE IN total_cost E AGGIORNATO IL TITOLO
         st.markdown(f"""
         <div class='whatif-headline' style='text-align:left;'>
             <div style='font-size:1.1rem;color:#95D5B2;margin-bottom:.5rem;'>Total Delivery Cost (incl. Carbon)</div>
