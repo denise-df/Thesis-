@@ -425,23 +425,13 @@ with tab_sim:
         )
 
     st.markdown(f"""
+   st.markdown(f"""
     <div class='justification-box'>
         <div class='just-title'>🔍 Methodology & Scientific Foundations</div>
         <div class='just-text'>
             <p style='margin-bottom: 0.8rem;'>The emission estimates for this specific trip are not generic averages, but are built upon a <b>hybrid physics-ML architecture</b> specifically engineered for urban logistics dynamics:</p>
             <ul>
-                <li style='margin-bottom: 0.8rem;'><b>Physics-Informed Engine & Stress Factor:</b> For internal combustion engine (ICE) vehicles, we derive emissions by translating macro-logistics (traffic, SLA) into a kinematic <i>Stress Factor</i>. This drives the instantaneous thermodynamic stress:
-                    <br>
-                    <span style='display: inline-flex; align-items: center; vertical-align: middle; font-family: "JetBrains Mono", monospace; color: #52B788; margin: 0.5rem 0;'>
-                        CO<sub>2</sub> = 
-                        <span style='display: inline-flex; flex-direction: column; text-align: center; margin: 0 0.3rem;'>
-                            <span style='border-bottom: 1px solid #52B788; padding: 0 0.2rem;'>RPM &times; Load</span>
-                            <span style='padding: 0 0.2rem;'>150,000</span>
-                        </span>
-                        &times; &Delta;t &times; Scale
-                    </span>
-                    <br>Unlike standard distance-based multipliers, this formulation mathematically captures the severe fuel penalties of <b>urban stop-and-go patterns</b> and extended engine idling.
-                </li>
+                <li style='margin-bottom: 0.8rem;'><b>Physics-Informed Engine & Stress Factor:</b> For internal combustion engine (ICE) vehicles, we derive emissions by translating macro-logistics (traffic, SLA) into a kinematic <i>Stress Factor</i>. This drives the instantaneous thermodynamic stress captured by Engine_Stress (RPM &times; Load), the strongest single predictor in the model (45.9% of the mean SHAP contribution). Rather than a fixed formula, emissions are predicted by a Gradient Boosting model trained on Engine_Stress together with Kinetic_Power and Road_Grade — unlike standard distance-based multipliers, this approach mathematically captures the severe fuel penalties of <b>urban stop-and-go patterns</b> and extended engine idling.</li>
                 <li style='margin-bottom: 0.8rem;'><b>Machine Learning Core:</b> The baseline prediction is validated against a <b>Stochastic Gradient Boosting</b> model. This algorithm was trained and cross-validated on over 150,000 high-frequency (1 Hz) OBD-II telemetry records, achieving an out-of-sample R&sup2; of 0.74. Electric vehicle baselines utilize Ridge Regression trained on rigorous <b>EU WLTP certification data</b>, explicitly avoiding the optimistic bias often found in standard test cycles.</li>
                 <li><b>Global Constants:</b> To ensure geographical neutrality, calculations strictly utilize the <b>IEA Global Average Grid Intensity ({GLOBAL_GRID_INTENSITY} kg/kWh)</b> for EVs, and the official IPCC emission factor for Diesel ({GLOBAL_DIESEL_CO2} kg/L).</li>
             </ul>
