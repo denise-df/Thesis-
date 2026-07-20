@@ -11,8 +11,7 @@ st.set_page_config(
 )
 
 # ── Navigation ─────────────────────────────────────────────────────────
-# ── Navigation ─────────────────────────────────────────────────────────
-def render_navigation(current_page="Results"):
+def render_navigation(current_page="Fleet"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
         '<g transform="translate(5, 12)"><rect x="8" y="8" width="18" height="12" fill="#2D6A4F" rx="2"/>'
@@ -52,8 +51,6 @@ def render_navigation(current_page="Results"):
 render_navigation("Fleet")
 
 # ── CSS ────────────────────────────────────────────────────────────────
-# Tema: dark verde profondo, accent teal-verde (#52B788 dominante)
-# Leggermente più "tecnico/freddo" della Home ma stessa famiglia
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -130,27 +127,19 @@ html, body, [class*="css"] {
     transform: translateY(-3px);
 }
 
-/* thermal = verde caldo / ICE */
 .spec-card.thermal::before  { background: linear-gradient(90deg, #B7E4C7, #52B788); }
-/* electric = verde brillante */
 .spec-card.electric::before { background: linear-gradient(90deg, #52B788, #95D5B2); }
-/* human = verde chiaro */
-.spec-card.human::before    { background: linear-gradient(90deg, #95D5B2, #D8F3DC); }
 
 .card-icon  { font-size: 2.4rem; margin-bottom: .7rem; }
 .card-name  { font-size: 1.2rem; font-weight: 700; color: #D8F3DC; margin-bottom: .2rem; }
 .card-model { font-family: 'JetBrains Mono', monospace; font-size: .72rem;
               color: #52B788; margin-bottom: 1rem; opacity: .8; }
 
-/* type badges — tutti verdi ma sfumature diverse */
 .badge-t  { display:inline-block; background:rgba(183,228,199,0.12); color:#B7E4C7;
             border:1px solid rgba(183,228,199,0.3); padding:.2rem .7rem;
             border-radius:4px; font-size:.7rem; font-weight:600; letter-spacing:1px; margin-bottom:1rem; }
 .badge-ev { display:inline-block; background:rgba(82,183,136,0.15); color:#52B788;
             border:1px solid rgba(82,183,136,0.35); padding:.2rem .7rem;
-            border-radius:4px; font-size:.7rem; font-weight:600; letter-spacing:1px; margin-bottom:1rem; }
-.badge-h  { display:inline-block; background:rgba(149,213,178,0.12); color:#95D5B2;
-            border:1px solid rgba(149,213,178,0.3); padding:.2rem .7rem;
             border-radius:4px; font-size:.7rem; font-weight:600; letter-spacing:1px; margin-bottom:1rem; }
 
 .spec-row   { display:flex; justify-content:space-between; align-items:center;
@@ -159,8 +148,8 @@ html, body, [class*="css"] {
 .spec-key   { font-size:.82rem; color:#52B788; font-weight:500; }
 .spec-val   { font-family:'JetBrains Mono', monospace; font-size:.88rem;
               color:#D8F3DC; font-weight:500; }
-.spec-val.hi { color:#95D5B2; }      /* valori buoni (EV) */
-.spec-val.lo { color:#B7E4C7; }      /* valori medi */
+.spec-val.hi { color:#95D5B2; }      
+.spec-val.lo { color:#B7E4C7; }      
 
 .data-pill  { display:inline-block; background:rgba(82,183,136,0.08);
               color:#52B788; border-radius:4px; padding:.25rem .6rem;
@@ -179,7 +168,6 @@ html, body, [class*="css"] {
 .rank-val   { font-family:'JetBrains Mono',monospace; font-size:.85rem;
               color:#52B788; width:80px; text-align:right; flex-shrink:0; }
 
-/* ── insight box ── */
 .ins-box {
     background: rgba(82, 183, 136, 0.08);
     border-left: 4px solid #52B788;
@@ -190,11 +178,10 @@ html, body, [class*="css"] {
     color: #B7E4C7;
 }
 
-/* ── buttons ── */
 div.stButton > button {
     background: rgba(45, 106, 79, 0.3) !important;
     color: #95D5B2 !important;
-    border: 1px solid rgba(82, 183, 136, 0.3) !important;
+    border: 1px solid rgba(82,183,136,0.3) !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
     transition: all .2s ease !important;
@@ -205,13 +192,12 @@ div.stButton > button:hover {
     color: #D8F3DC !important;
 }
 
-/* tabs */
 .stTabs [data-baseweb="tab"] { color:#52B788 !important; }
 .stTabs [aria-selected="true"] { color:#D8F3DC !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Fleet data ─────────────────────────────────────────────────────────
+# ── Fleet data (Ridotto a 5 veicoli principali) ─────────────────────────
 FLEET = {
     "Thermal Van": {
         "icon":"🚚","type":"ICE","badge":"thermal",
@@ -248,13 +234,6 @@ FLEET = {
         "co2":8,"eff":"88–92%","cap":40,"range":60,"cost":0.02,
         "traffic":"None (bike lane)","use":"Urban micro-logistics, groceries",
     },
-    "Pedal Bike": {
-        "icon":"🚲","type":"Human","badge":"human",
-        "model":"Cargo Bike (Babboe / Urban Arrow)",
-        "source":"Lifecycle food-calorie analysis","trips":412,
-        "co2":21,"eff":"—","cap":80,"range":30,"cost":0.01,
-        "traffic":"None (bike lane)","use":"Ultra-short urban eco-delivery",
-    },
 }
 
 rows = [{"Vehicle":k,"Type":v["type"],"CO₂ g/km":v["co2"],
@@ -267,10 +246,10 @@ df_rank = df.sort_values("CO₂ g/km").reset_index(drop=True)
 st.markdown("""
 <div class='fleet-hero'>
     <div class='fleet-eyebrow'>EcoFleet Analytics · Fleet Intelligence</div>
-    <div class='fleet-title'>Six Vehicles. One Benchmark.</div>
+    <div class='fleet-title'>Five Vehicles. One Benchmark.</div>
     <p class='fleet-sub'>
-        Side-by-side analysis of all 6 archetypes across emissions, efficiency, cost and
-        traffic resilience — drawn from <strong>15,591 real operational trips</strong>.
+        Side-by-side analysis of all 5 core archetypes across emissions, efficiency, cost and
+        traffic resilience — drawn from real operational trip datasets.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -292,8 +271,8 @@ for i, row in df_rank.iterrows():
 
 st.markdown("""
 <div class='ins-box'>
-    ✓ <strong>Electric Bike (8 g/km)</strong> is the lowest-emission option — lower than even the Pedal Bike
-    (21 g/km lifecycle). The Thermal Truck emits <strong>75× more</strong> per km than the Electric Bike.
+    ✓ <strong>Electric Bike (8 g/km)</strong> is the lowest-emission option for micro-logistics. 
+    The Thermal Truck emits significantly more per km due to heavy payload requirements.
 </div>
 """, unsafe_allow_html=True)
 
@@ -305,7 +284,7 @@ tab1, tab2, tab3 = st.tabs(["Emissions", "Cost vs Capacity", "Radar"])
 BG   = "rgba(0,0,0,0)"
 PLOT = "rgba(13,31,23,0.6)"
 FONT = dict(family="Inter", color="#95D5B2")
-COL  = {"ICE":"#40916C","EV":"#95D5B2","Human":"#D8F3DC"}
+COL  = {"ICE":"#40916C","EV":"#95D5B2"}
 
 with tab1:
     fig = px.bar(df_rank, x="Vehicle", y="CO₂ g/km", color="Type",
@@ -334,15 +313,12 @@ with tab2:
     st.plotly_chart(fig2, use_container_width=True)
 
 with tab3:
-    # 1. Normalizzazione Dati
     norm = df.copy()
     norm["Eco"]      = 100 - norm["CO₂ g/km"] / norm["CO₂ g/km"].max() * 100
     norm["Capacity"] = norm["Capacity kg"] / norm["Capacity kg"].max() * 100
     norm["Range"]    = norm["Range km"] / norm["Range km"].max() * 100
     norm["Economy"]  = 100 - norm["Cost €/km"] / norm["Cost €/km"].max() * 100
 
-    # 2. Definizione Colori (Linea HEX, Riempimento RGBA)
-    # Ho convertito i tuoi colori HEX in RGBA con opacità 0.2 per evitare l'errore
     radar_config = {
         "Electric Van":  {"line": "#95D5B2", "fill": "rgba(149, 213, 178, 0.2)"},
         "Thermal Van":   {"line": "#40916C", "fill": "rgba(64, 145, 108, 0.2)"},
@@ -350,57 +326,36 @@ with tab3:
     }
 
     fig3 = go.Figure()
-
-    # 3. Creazione Tracce
     for v, conf in radar_config.items():
-        # Filtra il dataframe per il veicolo corrente
         if v in norm["Vehicle"].values:
             r = norm[norm["Vehicle"]==v].iloc[0]
-            
             fig3.add_trace(go.Scatterpolar(
                 r=[r["Eco"], r["Capacity"], r["Range"], r["Economy"]],
                 theta=["Eco","Capacity","Range","Economy"],
                 fill="toself", 
                 name=v,
                 line=dict(color=conf["line"], width=2),
-                fillcolor=conf["fill"], # Ora usa RGBA valido
+                fillcolor=conf["fill"],
             ))
 
-    # 4. Layout (Stile Dark mantenuto come nel tuo esempio)
     fig3.update_layout(
         polar=dict(
             bgcolor="rgba(13,31,23,0.6)",
-            radialaxis=dict(
-                visible=True, 
-                range=[0,100],
-                gridcolor="rgba(82,183,136,0.15)", 
-                color="#52B788"
-            ),
-            angularaxis=dict(
-                gridcolor="rgba(82,183,136,0.15)", 
-                color="#95D5B2"
-            )
+            radialaxis=dict(visible=True, range=[0,100], gridcolor="rgba(82,183,136,0.15)", color="#52B788"),
+            angularaxis=dict(gridcolor="rgba(82,183,136,0.15)", color="#95D5B2")
         ),
-        paper_bgcolor=BG, 
-        font=FONT,
-        legend=dict(
-            bgcolor="rgba(0,0,0,0.2)", 
-            bordercolor="rgba(82,183,136,0.2)"
-        ),
-        title=dict(
-            text="Multi-Criteria Performance (0–100)",
-            font=dict(color="#D8F3DC", size=15)
-        ),
-        height=450,
-        margin=dict(t=40, b=40, l=40, r=40)
+        paper_bgcolor=BG, font=FONT,
+        legend=dict(bgcolor="rgba(0,0,0,0.2)", bordercolor="rgba(82,183,136,0.2)"),
+        title=dict(text="Multi-Criteria Performance (0–100)", font=dict(color="#D8F3DC", size=15)),
+        height=450, margin=dict(t=40, b=40, l=40, r=40)
     )
-    
     st.plotly_chart(fig3, use_container_width=True)
+
 # ── Spec cards ─────────────────────────────────────────────────────────
 def render_card(name, col):
     s = FLEET[name]
-    badge_cls = f"badge-{'ev' if s['type']=='EV' else 'h' if s['type']=='Human' else 't'}"
-    badge_txt = {"ICE":"THERMAL · ICE","EV":"ELECTRIC · EV","Human":"HUMAN · ZERO"}[s["type"]]
+    badge_cls = f"badge-{'ev' if s['type']=='EV' else 't'}"
+    badge_txt = {"ICE":"THERMAL · ICE","EV":"ELECTRIC · EV"}[s["type"]]
     val_cls   = lambda v: "hi" if s["type"]!="ICE" else "lo"
     with col:
         st.markdown(f"""
@@ -429,12 +384,14 @@ def render_card(name, col):
 
 st.markdown("<div class='sec-h'>🔥 Thermal Fleet (ICE)</div>", unsafe_allow_html=True)
 t1, t2, t3 = st.columns(3, gap="medium")
-for name, col in zip([k for k,v in FLEET.items() if v["type"]=="ICE"], [t1,t2,t3]):
+ice_vehicles = [k for k,v in FLEET.items() if v["type"]=="ICE"]
+for name, col in zip(ice_vehicles, [t1, t2, t3]):
     render_card(name, col)
 
-st.markdown("<div class='sec-h'>⚡ Electric &amp; Human Fleet</div>", unsafe_allow_html=True)
-e1, e2, e3 = st.columns(3, gap="medium")
-for name, col in zip([k for k,v in FLEET.items() if v["type"] in ["EV","Human"]], [e1,e2,e3]):
+st.markdown("<div class='sec-h'>⚡ Electric Fleet</div>", unsafe_allow_html=True)
+e1, e2 = st.columns(2, gap="medium")
+ev_vehicles = [k for k,v in FLEET.items() if v["type"]=="EV"]
+for name, col in zip(ev_vehicles, [e1, e2]):
     render_card(name, col)
 
 # ── Decision matrix ────────────────────────────────────────────────────
@@ -445,7 +402,7 @@ dm = pd.DataFrame({
                  "Urban 50–100 km, < 500 kg","Inter-city > 100 km","Bulk freight > 1,000 kg",
                  "Same-Day (<4h) urgent urban","Eco-priority / ZEZ zone"],
     "Best Choice": ["Electric Bike","Electric Van","Thermal Van","Thermal Van",
-                    "Thermal Truck","Thermal Scooter","Electric Bike / Pedal Bike"],
+                    "Thermal Truck","Thermal Scooter","Electric Bike"],
 })
 st.dataframe(dm, use_container_width=True, hide_index=True)
 
