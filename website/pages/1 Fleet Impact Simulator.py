@@ -150,6 +150,14 @@ def format_time(hours):
     h, m = divmod(m, 60)
     return f"{h}h {m}m" if h > 0 else f"{m}m {s}s"
 
+def co2_equivalents(kg):
+    return {
+        "🌳": {"val": round(kg / 21.77, 1), "label": "trees needed\n1 year to absorb"},   
+        "🚗": {"val": round(kg / 0.170, 1), "label": "km driven in\nan average diesel car"},
+        "📱": {"val": round(kg / 0.0085, 0), "label": "smartphone\nfull charges"},         
+        "🍔": {"val": round(kg / 2.5, 1),   "label": "beef burgers\nin carbon footprint"}, 
+    }
+
 @st.cache_resource(show_spinner=False)
 def load_models():
     base = Path(__file__).parent
@@ -222,7 +230,7 @@ st.markdown("""
     <div class='fleet-eyebrow'>Predictive Analytics · Global Benchmarks</div>
     <div class='fleet-title'>Carbon Emission Prediction</div>
     <p class='fleet-sub'>
-        Physics based emission prediction powered by real time machine learning inference.
+        Physics based emission prediction powered by real time machine learning inference
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -285,3 +293,15 @@ if st.button("RUN PREDICTION", type="primary", use_container_width=True):
     mc2.markdown(f"<div class='m-box'><div class='m-val'>{p['kmh']:.0f}</div><div class='m-lbl'>km/h avg</div></div>", unsafe_allow_html=True)
     mc3.markdown(f"<div class='m-box'><div class='m-val'>{p['stress']:.1f}x</div><div class='m-lbl'>Stress Factor</div></div>", unsafe_allow_html=True)
     mc4.markdown(f"<div class='m-box'><div class='m-val'>{(co2_total/dist*1000):.0f}</div><div class='m-lbl'>g/km</div></div>", unsafe_allow_html=True)
+
+    st.markdown("<div class='sec-h' style='margin-top:2rem;'>🌿 What does this mean in real life?</div>", unsafe_allow_html=True)
+    eqs = co2_equivalents(co2_total)
+    eq_cols = st.columns(4)
+    for col, (icon, data) in zip(eq_cols, eqs.items()):
+        with col:
+            st.markdown(f"""
+            <div class='eq-card'>
+                <div class='eq-icon' style='font-size:2rem; margin-bottom:0.5rem;'>{icon}</div>
+                <div class='eq-val' style='font-family:JetBrains Mono, monospace; font-size:1.5rem; font-weight:700; color:#52B788;'>{data['val']:,}</div>
+                <div class='eq-label' style='font-size:0.75rem; color:#95D5B2;'>{data['label'].replace(chr(10), '<br>')}</div>
+            </div>""", unsafe_allow_html=True)
