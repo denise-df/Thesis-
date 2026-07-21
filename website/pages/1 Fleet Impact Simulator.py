@@ -40,6 +40,7 @@ def render_navigation(current_page="Simulator"):
     sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
     cols = [c1, c2, c3, c4, c5, c6]
 
+    # MENU CORRETTO BASATO SUI NOMI REALI DEI FILE
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
         ("📊 Results",   "Results",   "pages/7 Result Analysis.py"),
@@ -162,7 +163,6 @@ def co2_equivalents(kg):
         "🍔": {"val": round(kg / 2.5, 1),   "label": "beef burgers\nin carbon footprint"},
     }
 
-@st.cache_resource(show_spinner=False)
 @st.cache_resource(show_spinner=False)
 def load_models():
     base = Path(__file__).parent
