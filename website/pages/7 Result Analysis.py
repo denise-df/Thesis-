@@ -57,11 +57,11 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 .fleet-eyebrow { font-family:'JetBrains Mono',monospace; font-size:.75rem; letter-spacing:3px; color:#52B788; text-transform:uppercase; margin:1rem 0 .8rem 0; }
 .title-text { color:#D8F3DC; font-weight:800; font-size:3rem; margin-bottom:.5rem; line-height:1.1; }
 .subtitle-text { color:#95D5B2; font-size:1.05rem; line-height:1.7; opacity:.85; margin-bottom:1rem; }
-.sec-h { font-size:1.5rem; font-weight:700; color:#95D5B2; margin:3rem 0 .6rem 0; padding-bottom:.5rem; border-bottom:1px solid rgba(82,183,136,0.25); }
-.sec-explain { font-size:.95rem; color:#95D5B2; opacity:.8; line-height:1.6; margin-bottom:1.5rem; }
+.sec-h { font-size:1.5rem; font-weight:700; color:#95D5B2; margin:3rem 0 .6rem 0; padding-bottom:.5rem; text-align:center; }
+.sec-explain { font-size:.95rem; color:#95D5B2; opacity:.8; line-height:1.6; margin-bottom:1.5rem; text-align:center; max-width:800px; margin-left:auto; margin-right:auto; }
 .nm-badge { display:inline-block; background:rgba(82,183,136,0.15); border:1px solid #52B788; border-radius:20px; padding:.4rem 1.1rem; margin-bottom:1rem; font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px; color:#95D5B2; }
 
-/* ── BARRE MIN-MAX: STILE ROSSO E VERDE ── */
+/* ── BARRE MIN-MAX ── */
 .line-wrap { margin:1rem 0 3.5rem 0; }
 .line-track { position:relative; height:8px; border-radius:4px; margin: 6rem 8rem 4rem 8rem; }
 
@@ -71,10 +71,10 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 .pole-risk-r { background:#E63946; } 
 .pole-risk-m { background:#F0624D; }
 
-/* Barra del Valore: Gradiente Verde */
-.line-opp { background:linear-gradient(90deg, #52B788, #2D6A4F); box-shadow: 0 2px 10px rgba(82,183,136,0.3); }
-.pole-opp-l { background:#52B788; } 
-.pole-opp-r { background:#2D6A4F; }
+/* Barra del Valore: Gradiente Verde Brillantissimo (#2EC4B6) */
+.line-opp { background:linear-gradient(90deg, #2EC4B6, #20B2AA); box-shadow: 0 2px 15px rgba(46,196,182,0.4); }
+.pole-opp-l { background:#2EC4B6; } 
+.pole-opp-r { background:#20B2AA; }
 
 .pole { position:absolute; top:-4px; width:16px; height:16px; border-radius:50%; border:3px solid #0D1F17; transform:translate(-50%,0); }
 .pole.left{left:0;} .pole.right{left:100%;} .pole.mid{left:50%; opacity:.6; width:12px; height:12px; top:-2px;}
@@ -87,10 +87,10 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 .plabel .desc { font-size:.82rem; color:#95D5B2; opacity:.85; line-height:1.4; margin-top:.4rem; }
 
 /* Colori dei Testi Numerici */
-.risk .val { color:#E63946; } /* Valori Costo in Rosso */
-.opp .val { color:#52B788; }  /* Valori Azione in Verde */
+.risk .val { color:#E63946; } 
+.opp .val { color:#2EC4B6; } /* Valori Azione in Verde Brillante */
 
-.co2-note { font-size:.85rem; color:#95D5B2; opacity:.9; margin-top:2.5rem; border-left:2px solid rgba(82,183,136,0.4); padding-left:.8rem; line-height:1.5; }
+.co2-note { font-size:.85rem; color:#95D5B2; opacity:.9; margin-top:2.5rem; border-left:2px solid rgba(82,183,136,0.4); padding-left:.8rem; line-height:1.5; text-align:center; max-width:800px; margin-left:auto; margin-right:auto;}
 .capex-tbl { width:100%; border-collapse:collapse; font-size:.9rem; }
 .capex-tbl th { color:#52B788; text-align:left; padding:.6rem .5rem; border-bottom:1px solid rgba(82,183,136,0.3); font-family:'JetBrains Mono',monospace; font-size:.75rem; letter-spacing:1px; text-transform:uppercase; }
 .capex-tbl td { padding:.6rem .5rem; border-bottom:1px solid rgba(82,183,136,0.1); color:#D8F3DC; }
@@ -116,9 +116,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# SEZIONE 1: TITOLO COSTO E BARRA ROSSA
+# SEZIONE 1: TITOLO COSTO (Centrato e Rosso)
 st.markdown("""
-<div class='sec-h' style='border-bottom: 1px solid rgba(230,57,70,0.3);'>
+<div class='sec-h' style='border-bottom: 1px solid rgba(230,57,70,0.3); padding-bottom: 0.8rem;'>
     1 · The <span style='font-size:2rem; color:#E63946; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin: 0 4px;'>Cost</span> of doing nothing
 </div>
 """, unsafe_allow_html=True)
@@ -145,10 +145,10 @@ st.markdown("""
 <div class='co2-note'> What drives this bill: the fleet's <b>135 tonnes of CO₂ per day</b>, unpriced today but soon taxed.</div>
 """, unsafe_allow_html=True)
 
-# SEZIONE 2: TITOLO VALORE E BARRA VERDE
+# SEZIONE 2: TITOLO VALORE (Centrato e Verde Brillante)
 st.markdown("""
-<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3);'>
-    2 · The <span style='font-size:2rem; color:#52B788; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin: 0 4px;'>Value</span> of acting
+<div class='sec-h' style='border-bottom: 1px solid rgba(46,196,182,0.3); padding-bottom: 0.8rem;'>
+    2 · The <span style='font-size:2rem; color:#2EC4B6; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin: 0 4px;'>Value</span> of acting
 </div>
 """, unsafe_allow_html=True)
 
@@ -171,7 +171,7 @@ st.markdown("""
 <div class='co2-note'> At the top end, the fleet avoids <b>541,800 kg of CO₂ every day</b> versus a fully thermal baseline.</div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='sec-h'>3 · How far to go electric: cost vs. benefit</div>", unsafe_allow_html=True)
+st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · How far to go electric: cost vs. benefit</div>", unsafe_allow_html=True)
 st.markdown(
     "<div class='sec-explain'>Each step of electrification cuts more CO₂ — but also costs more upfront. "
     "The smart stopping point is <b>75%</b>: it cuts emissions by 60% while keeping the flexibility of a mixed fleet. "
@@ -181,14 +181,12 @@ st.markdown(
 
 chart_col, table_col = st.columns([1.3, 1])
 with chart_col:
-    # Aggiunto lo 0 per ancorare la curva all'origine
     ev_share = [0, 25, 50, 75, 100]
     co2_reduction = [0, 20, 40, 60, 80]
     capex = [0, 5, 10, 16, 22]
     
     fig = go.Figure()
     
-    # Traccia CO2 - Aggiunto shape="spline" per curve morbide
     fig.add_trace(go.Scatter(
         x=ev_share, y=co2_reduction, name="CO₂ cut (%)", mode="lines+markers", yaxis="y1",
         line=dict(color="#52B788", width=3, shape="spline"),
@@ -197,7 +195,6 @@ with chart_col:
                     line=dict(width=2, color="#0D1F17")),
         hovertemplate="%{x}% electric → %{y}% less CO₂<extra></extra>"))
         
-    # Traccia CAPEX - Aggiunto shape="spline" per curve morbide
     fig.add_trace(go.Scatter(
         x=ev_share, y=capex, name="Upfront cost (M€)", mode="lines+markers", yaxis="y2",
         line=dict(color="#E65100", width=3, dash="dot", shape="spline"),
@@ -239,7 +236,7 @@ with table_col:
         <tr class='hi'><td>75% ◆</td><td>−60%</td><td>~€16M</td></tr>
         <tr><td>100%</td><td>−80%</td><td>~€22M</td></tr>
     </table>
-    <div class='co2-note' style='margin-top:1rem;'>
+    <div class='co2-note' style='margin-top:1rem; text-align: left;'>
         Every 25% electrified cuts the same 20% of CO₂ — steady benefit.
         But past 75% you lose the option to also use delivery-speed as a lever:
         electric becomes pure replacement, not smart strategy.
