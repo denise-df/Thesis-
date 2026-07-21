@@ -249,11 +249,14 @@ with c1:
     </div>""", unsafe_allow_html=True)
 
 with c2:
+    # CORRETTO: la 5-fold CV (mean R²=0.6319) in tesi è riferita al modello ICE
+    # (Fig. B.2, Sez. 4.3.1), non all'EV. L'R²=0.77 dell'EV è un R² su test set
+    # (n=160, Cheng et al. 2025 correction), non da cross-validation.
     st.markdown("""
     <div class='stat-box'>
         <div class='s-icon'>📈</div>
         <div class='s-num'>0.77</div>
-        <div class='s-label'>EV Model R² (5-fold CV)</div>
+        <div class='s-label'>EV Model R² (Test Set)</div>
         <div class='s-detail'>Ridge+Poly(2) · CN BEV specs n=160 (Mai et al. 2025) + 12.04% WLTP correction (Cheng et al. 2025)</div>
     </div>""", unsafe_allow_html=True)
 
@@ -267,12 +270,16 @@ with c3:
     </div>""", unsafe_allow_html=True)
 
 with c4:
+    # CORRETTO: "85% EV drivetrain efficiency vs 20-30% ICE" non è presente
+    # in tesi (cifra generica di settore, non un risultato della ricerca).
+    # Sostituito con la Stress Factor finding, verificata testualmente in tesi
+    # (Cap. 1, contributo 2: η²=0.207, 13.9% emission excess).
     st.markdown("""
     <div class='stat-box'>
-        <div class='s-icon'>⚡</div>
-        <div class='s-num'>85%</div>
-        <div class='s-label'>EV Drivetrain Efficiency</div>
-        <div class='s-detail'>vs 20–30% for ICE engines</div>
+        <div class='s-icon'>📐</div>
+        <div class='s-num'>20.7%</div>
+        <div class='s-label'>Emission Variance Explained by SLA</div>
+        <div class='s-detail'>Stress Factor · η²=0.207 · +13.9% emission excess for urgent deliveries</div>
     </div>""", unsafe_allow_html=True)
 
 # ========================================================================
@@ -283,6 +290,11 @@ st.markdown("<h2 class='sec-h'> Research Findings</h2>", unsafe_allow_html=True)
 col_l, col_r = st.columns(2, gap="large")
 
 with col_l:
+    # CORRETTO: rimossi i bullet "Fill Rate Collapse 95%→30%", "+40% RPM×Load"
+    # e "+30% total km", non riscontrati in nessun punto della tesi.
+    # Sostituiti con i due risultati che la tesi documenta esplicitamente per
+    # questa card: la Stress Factor (η²=0.207) e il differenziale territoriale
+    # (+218% urbano / +325% periferico).
     st.markdown("""
     <div class='ins-card ins-thermal'>
         <div style='font-size:2.8rem;margin-bottom:.5rem;'>🔥</div>
@@ -295,29 +307,34 @@ with col_l:
             <strong>+29.3%</strong> (Dunn post-hoc test, p&lt;0.001),
             based on the simulation of <strong>25,000 logistics trips</strong>.
         </p>
-        <div class='ins-li'><strong>Fill Rate Collapse:</strong> 95% → 30% (vehicles half-empty)</div>
-        <div class='ins-li'><strong>Traffic Exposure:</strong> Forced entry into peak-hour gridlock</div>
-        <div class='ins-li'><strong>Engine Stress:</strong> +40% RPM × Load vs Standard</div>
-        <div class='ins-li'><strong>Distance Penalty:</strong> Fragmented routing (+30% total km)</div>
+        <div class='ins-li'><strong>Stress Factor:</strong> SLA urgency alone explains 20.7% of emission variance (η²=0.207)</div>
+        <div class='ins-li'><strong>Kinematic Saturation:</strong> beyond a threshold, further time compression no longer raises emissions</div>
+        <div class='ins-li'><strong>Traffic Exposure:</strong> forced entry into peak-hour gridlock</div>
+        <div class='ins-li'><strong>Territorial Penalty:</strong> empty miles add +218% urban / +325% peripheral</div>
         <div class='ins-foot' style='color:#95D5B2;'>
             <strong> Source: OBD-II telemetry · Fiat Ducato / Ford Transit fleet (real data)</strong>
         </div>
     </div>""", unsafe_allow_html=True)
 
 with col_r:
+    # CORRETTO: "7× better" non corrisponde ai numeri di tesi (55% vs 11% ≈ 5×;
+    # la tesi definisce un proprio "sensitivity ratio" di 1.39). Il −80% invece
+    # è corretto: 11 è l'80% in meno di 55, quindi resta invariato.
+    # Rimosso anche "15-20% regenerated via braking" (nessun riscontro in tesi).
+    # "5-fold CV" tolto anche qui dall'EV, per lo stesso motivo del box sopra.
     st.markdown("""
     <div class='ins-card ins-electric'>
         <div style='font-size:2.8rem;margin-bottom:.5rem;'>🔋</div>
         <div class='ins-title'>The Gridlock Advantage</div>
         <div class='ins-metric m-electric'>−80%</div>
         <p class='ins-text'>
-            <strong>EVs absorb traffic stress 7× better than thermal</strong>: in heavy congestion,
+            <strong>EVs show a sensitivity ratio of 1.39 to traffic stress vs thermal vehicles</strong>: in heavy congestion,
             ICE emissions increase by +55% while EVs only by +11%. The framework
-            adopts the CN/CLTC-trained EV model (n=160, R²=0.77 5-fold CV) with a
+            adopts the CN/CLTC-trained EV model (n=160, R²=0.77 test set) with a
             <strong>+12.04% WLTP correction factor</strong> (Cheng et al. 2025).
         </p>
         <div class='ins-li'><strong>Zero Idling Loss:</strong> No energy burned at standstill</div>
-        <div class='ins-li'><strong>Energy Recovery:</strong> 15–20% regenerated via braking</div>
+        <div class='ins-li'><strong>Regenerative Braking:</strong> energy recovered during deceleration phases</div>
         <div class='ins-li'><strong>Thermal Gridlock:</strong> +55% emissions vs free-flow</div>
         <div class='ins-li'><strong>EV Gridlock:</strong> only +11% consumption</div>
         <div class='ins-foot' style='color:#95D5B2;'>
@@ -333,12 +350,13 @@ st.markdown("<h2 class='sec-h'> Platform Capabilities</h2>", unsafe_allow_html=T
 f1, f2, f3 = st.columns(3, gap="large")
 
 with f1:
+    # CORRETTO: "EV, R²=0.77 5-fold CV" → il 5-fold CV appartiene all'ICE.
     st.markdown("""
     <div class='feat-card'>
         <div class='f-icon'>💻</div>
         <div class='f-title'>Fleet Impact Simulator</div>
         <p class='f-desc'>
-            AI predictions via Gradient Boosting (ICE, R²=0.74) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.77 5-fold CV, +12.04% WLTP correction).
+            AI predictions via Gradient Boosting (ICE, R²=0.74, 5-fold CV mean R²=0.63) and Ridge+Poly(2) on CN/CLTC sub-sample (EV, R²=0.77 test set, +12.04% WLTP correction).
             Simulate 6 vehicle types × 4 SLA levels with real physics parameters and EU ETS carbon pricing.
         </p>
     </div>""", unsafe_allow_html=True)
@@ -396,8 +414,19 @@ with f6:
 # Sunburst sostituito: il nodo "tipo" era figlio dello stesso nodo "All Vehicles"
 # dei singoli veicoli → struttura confusa. Sostituito con bar chart orizzontale
 # raggruppato per propulsione — più chiaro e informativo.
+#
+# CORRETTO: questi 6 archetipi (Van/Truck/Scooter/EV Van/E-Bike/Pedal Bike)
+# corrispondono al modulo "Fleet Comparison" (Sez. 5.2.2 / App. C.1), NON al
+# dataset India Logistics da 25.000 shipment (quest'ultimo è ripartito solo
+# per livello SLA, ~25% ciascuno — Fig. 3.3). Il totale qui sotto (15.591)
+# NON va quindi confuso con i "25,000 Simulated Trips" citati altrove nella
+# pagina: titolo e didascalia sono stati corretti di conseguenza per evitare
+# l'incongruenza. I valori CO₂/km per Truck, Scooter, E-Bike e Pedal Bike non
+# sono verificabili dal testo estratto della tesi (compaiono solo come
+# screenshot dell'app in Appendice C.1): verificali tu stessa contro i valori
+# reali del tool "Fleet Comparison" prima di pubblicare.
 # ========================================================================
-st.markdown("<h2 class='sec-h'> Fleet Composition</h2>", unsafe_allow_html=True)
+st.markdown("<h2 class='sec-h'> Fleet Archetypes (Fleet Comparison Module)</h2>", unsafe_allow_html=True)
 
 fleet = pd.DataFrame({
     "Vehicle":  ["Thermal Van", "Thermal Truck", "Thermal Scooter",
@@ -447,11 +476,11 @@ fig.update_layout(
     font=dict(family="Inter", color="#D8F3DC", size=13),
     showlegend=False,
     title=dict(
-        text="Archetypal fleet breakdown — vehicle distribution across last-mile use cases",
+        text="Fleet Comparison module archetypes — illustrative scenario mix (not the 25,000-shipment dataset)",
         font=dict(size=14, color="#95D5B2"),
     ),
     xaxis=dict(
-        title="Number of Trips",
+        title="Number of Trips (scenario mix)",
         gridcolor="rgba(82,183,136,.12)",
         tickfont=dict(color="#95D5B2"),
     ),
@@ -466,6 +495,7 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 # Leggenda propulsione sotto il grafico — 3 colonne Streamlit
+# Percentuali ricalcolate sul totale reale di questo grafico (15,591), non su 25,000.
 leg1, leg2, leg3 = st.columns(3)
 with leg1:
     st.markdown("""
