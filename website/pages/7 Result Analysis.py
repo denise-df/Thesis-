@@ -43,7 +43,7 @@ def render_navigation(current_page="Results"):
     for col, (label, key, page) in zip(cols, nav):
         with col:
             if st.button(label, use_container_width=True,
-                        type="primary" if current_page == key else "secondary"):
+                         type="primary" if current_page == key else "secondary"):
                 st.switch_page(page)
 
 render_navigation("Results")
@@ -165,48 +165,40 @@ st.markdown("""
 <div class='co2-note'> At the top end, the fleet avoids <b>541,800 kg of CO₂ every day</b> versus a fully thermal baseline.</div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · How far to go electric: cost vs. benefit</div>", unsafe_allow_html=True)
+st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · How far to go electric: Net Value optimization</div>", unsafe_allow_html=True)
 st.markdown(
     "<div class='sec-explain'>Net Value — the annual value created (SLA renegotiation + avoided carbon/fuel cost), minus the "
     "upfront investment spread over the vehicles' 3-year working life — keeps growing all the way to 100% electrification. "
-    "But it grows at a steadily <b>slower rate</b>: at <b>75%</b> you have already captured <b>87.6% of the maximum possible value</b>, "
-    "having spent <b>€6M less</b> in upfront CAPEX. The last 25% adds only €0.73M/year in extra value for €6M in extra investment — "
-    "a return of just €0.12 per euro invested, a fraction of the €0.55 the earlier tranches returned — while also permanently "
-    "eliminating the SLA commercial lever, which still carries 3.5% of its benefit at 75% and zero beyond it.</div>",
+    "However, the curve flattens significantly: at <b>75%</b> you capture <b>87.6% of the maximum possible value</b>, "
+    "saving <b>€6M in upfront CAPEX</b>. Pushing the last 25% yields diminishing returns (€0.12 per euro vs €0.55 earlier) "
+    "and permanently removes the SLA operational flexibility lever.</div>",
     unsafe_allow_html=True
 )
 
 chart_col, table_col = st.columns([1.3, 1])
 with chart_col:
-    # ── Net Value curve — REAL numbers only ────────────────────────
-    ev_share       = [0, 25, 50, 75, 100]
-    annual_value   = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr — real, from NB06/fleet_kpis.json
-    capex          = [0, 5, 10, 16, 22]                 # M€ upfront — Table 5.3 (thesis)
+    # ── Net Value curve (Single metric view) ────────────────────────
+    ev_share         = [0, 25, 50, 75, 100]
+    annual_value     = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr
+    capex            = [0, 5, 10, 16, 22]               # M€ upfront
     VEHICLE_LIFE_YEARS = 3
     amortised_capex = [c / VEHICLE_LIFE_YEARS for c in capex]
-    net_value       = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
-    STRATEGIC_IDX   = 3  # 75% — the strategic stopping point (NOT the mathematical maximum)
+    net_value        = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
+    STRATEGIC_IDX    = 3   # 75% — the strategic stopping point
 
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
-        x=ev_share, y=net_value, name="Net Value (M€/yr)", mode="lines+markers", yaxis="y1",
+        x=ev_share, y=net_value, name="Net Value (M€/yr)", mode="lines+markers",
         line=dict(color="#52B788", width=3, shape="spline"),
-        marker=dict(size=[9 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
+        marker=dict(size=[10 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
                     color=["#52B788" if i != STRATEGIC_IDX else "#F9C74F" for i in range(len(ev_share))],
                     line=dict(width=2, color="#0D1F17")),
         hovertemplate="%{x}% electric → Net Value €%{y:.2f}M/yr<extra></extra>"))
 
-    fig.add_trace(go.Scatter(
-        x=ev_share, y=capex, name="Upfront cost (M€)", mode="lines+markers", yaxis="y2",
-        line=dict(color="#E65100", width=2, dash="dot", shape="spline"),
-        marker=dict(size=[0 if s == 0 else 7 for s in ev_share],
-                    color="#E65100", line=dict(width=2, color="#0D1F17")),
-        hovertemplate="%{x}% electric → ~%{y} M€ upfront<extra></extra>"))
-
     fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.5)
-    fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX], yref="y1",
-                       text="◆ 75% — 87.6% of max value, €6M less invested",
+    fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX],
+                       text="◆ 75% Optimal Balance (87.6% max value, €6M less CAPEX)",
                        showarrow=True, arrowhead=2, ax=0, ay=-45,
                        font=dict(color="#F9C74F", size=12), bgcolor="rgba(13,31,23,0.9)",
                        bordercolor="#F9C74F", borderwidth=1)
@@ -220,18 +212,12 @@ with chart_col:
             gridcolor="rgba(82,183,136,0.15)", ticksuffix="M",
             tickfont=dict(color="#52B788")
         ),
-        yaxis2=dict(
-            title=dict(text="Upfront cost (M€)", font=dict(color="#E65100")),
-            overlaying="y", side="right", showgrid=False,
-            ticksuffix="M", tickfont=dict(color="#E65100")
-        ),
         height=380, margin=dict(l=20, r=20, t=30, b=20),
-        legend=dict(orientation="h", y=1.14, x=0, font=dict(size=11))
+        showlegend=False
     )
     st.plotly_chart(fig, use_container_width=True)
     st.caption("Net Value = annual value created (SLA renegotiation + avoided carbon/fuel cost) "
-               "− upfront CAPEX amortised over a 3-year vehicle life. Figures derived directly from "
-               "NB06 (Scenario C) and Table 5.3 — Net Value keeps rising to 100%, it does not peak at 75%.")
+               "− upfront CAPEX amortised over a 3-year vehicle life. Derived from NB06 and Table 5.3.")
 
 with table_col:
     st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
@@ -245,10 +231,8 @@ with table_col:
         <tr><td>100%</td><td>€13.24M</td><td>~€22M</td><td>€5.91M</td></tr>
     </table>
     <div class='co2-note' style='margin-top:1rem; text-align: left;'>
-        Net Value keeps rising all the way to 100% (€5.91M) — it does not peak at 75%. The strategic
-        case for stopping at 75% is different: you already hold <b>87.6%</b> of the maximum value there,
-        for <b>€6M less</b> CAPEX. The last 25% returns only €0.12 per euro invested (vs €0.55 earlier)
-        and permanently removes the SLA lever.
+        Net Value keeps rising to 100% (€5.91M). The strategic case for stopping at 75% is capital efficiency:
+        you secure <b>87.6%</b> of maximum value while saving <b>€6M</b> in upfront CAPEX, avoiding the sharp drop in marginal returns (€0.12 vs €0.55 per euro).
     </div>
     """, unsafe_allow_html=True)
 
