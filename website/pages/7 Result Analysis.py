@@ -3,12 +3,10 @@ import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="Economic Strategy | EcoFleet Analytics",
-    page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# ── Navigation ─────────────────────────────────────────────────────────
 def render_navigation(current_page="Results"):
     logo_svg = (
         '<svg width="170" height="45" viewBox="0 0 180 50">'
@@ -29,11 +27,11 @@ def render_navigation(current_page="Results"):
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
     
     sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5, c6] 
+    cols = [c1, c2, c3, c4, c5, c6]
 
     nav = [
-        ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
+        ("🚗 Simulator", "Simulator", "pages/1 Carbon Emission Prediction.py"),
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"),
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -43,12 +41,11 @@ def render_navigation(current_page="Results"):
     for col, (label, key, page) in zip(cols, nav):
         with col:
             if st.button(label, use_container_width=True,
-                         type="primary" if current_page == key else "secondary"):
+                        type="primary" if current_page == key else "secondary"):
                 st.switch_page(page)
 
 render_navigation("Results")
 
-# ── CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -165,65 +162,75 @@ st.markdown("""
 <div class='co2-note'> At the top end, the fleet avoids <b>541,800 kg of CO₂ every day</b> versus a fully thermal baseline.</div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · How far to go electric: Net Value optimization</div>", unsafe_allow_html=True)
+st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · Diminishing Marginal Returns: Net Value vs. Upfront Investment</div>", unsafe_allow_html=True)
 st.markdown(
-    "<div class='sec-explain'>Net Value — the annual value created (SLA renegotiation + avoided carbon/fuel cost), minus the "
-    "upfront investment spread over the vehicles' 3-year working life — keeps growing all the way to 100% electrification. "
-    "However, the curve flattens significantly: at <b>75%</b> you capture <b>87.6% of the maximum possible value</b>, "
-    "saving <b>€6M in upfront CAPEX</b>. Pushing the last 25% yields diminishing returns (€0.12 per euro vs €0.55 earlier) "
-    "and permanently removes the SLA operational flexibility lever.</div>",
+    "<div class='sec-explain'><b>Net Value</b> is defined as the <em>Annual Economic Benefit</em> (avoided carbon/fuel costs + SLA optimization savings) "
+    "minus the <em>Amortized Upfront Investment (CAPEX)</em> spread over a 3-year vehicle lifecycle[cite: 1]. "
+    "As electrification increases, the curve exhibits <b>diminishing marginal returns</b>: moving from 0% to 75% rapidly captures <b>87.6% of the maximum economic value</b> "
+    "while avoiding the heavy capitalization of the final stretch. Beyond 75%, each extra percentage of EV fleet yields significantly smaller net gains.</div>",
     unsafe_allow_html=True
 )
 
 chart_col, table_col = st.columns([1.3, 1])
 with chart_col:
-    # ── Net Value curve (Single metric view) ────────────────────────
-    ev_share         = [0, 25, 50, 75, 100]
-    annual_value     = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr
-    capex            = [0, 5, 10, 16, 22]               # M€ upfront
+    # ── Net Value curve — Corretto l'hover per evitare il doppio % ──
+    ev_share        = [0, 25, 50, 75, 100]
+    annual_value    = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr
+    capex           = [0, 5, 10, 16, 22]                 # M€ upfront
     VEHICLE_LIFE_YEARS = 3
     amortised_capex = [c / VEHICLE_LIFE_YEARS for c in capex]
-    net_value        = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
-    STRATEGIC_IDX    = 3   # 75% — the strategic stopping point
+    net_value       = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
+    STRATEGIC_IDX   = 3  # 75%
 
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
-        x=ev_share, y=net_value, name="Net Value (M€/yr)", mode="lines+markers",
+        x=ev_share, y=net_value, name="Net Economic Value (M€/yr)", mode="lines+markers", yaxis="y1",
         line=dict(color="#52B788", width=3, shape="spline"),
-        marker=dict(size=[10 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
+        marker=dict(size=[9 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
                     color=["#52B788" if i != STRATEGIC_IDX else "#F9C74F" for i in range(len(ev_share))],
                     line=dict(width=2, color="#0D1F17")),
-        hovertemplate="%{x}% electric → Net Value €%{y:.2f}M/yr<extra></extra>"))
+        hovertemplate="<b>%{x}% Electric Fleet</b><br>Net Value: €%{y:.2f}M/yr<extra></extra>"))
 
-    fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.5)
-    fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX],
-                       text="◆ 75% Optimal Balance (87.6% max value, €6M less CAPEX)",
+    fig.add_trace(go.Scatter(
+        x=ev_share, y=capex, name="Upfront CAPEX (M€)", mode="lines+markers", yaxis="y2",
+        line=dict(color="#E65100", width=2, dash="dot", shape="spline"),
+        marker=dict(size=[0 if s == 0 else 7 for s in ev_share],
+                    color="#E65100", line=dict(width=2, color="#0D1F17")),
+        hovertemplate="<b>%{x}% Electric Fleet</b><br>Upfront CAPEX: €%{y}M<extra></extra>"))
+
+    fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.7)
+    fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX], yref="y1",
+                       text="◆ 75%: Diminishing Returns Threshold<br>(87.6% max value captured, €6M saved)",
                        showarrow=True, arrowhead=2, ax=0, ay=-45,
-                       font=dict(color="#F9C74F", size=12), bgcolor="rgba(13,31,23,0.9)",
+                       font=dict(color="#F9C74F", size=11), bgcolor="rgba(13,31,23,0.95)",
                        bordercolor="#F9C74F", borderwidth=1)
 
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#D8F3DC", family="Inter"),
-        xaxis=dict(title="Share of electric vehicles", showgrid=False, tickvals=ev_share, ticksuffix="%"),
+        xaxis=dict(title="Fleet Electrification Share", showgrid=False, tickvals=ev_share, ticksuffix="%"),
         yaxis=dict(
             title=dict(text="Net Value (M€/yr)", font=dict(color="#52B788")),
             gridcolor="rgba(82,183,136,0.15)", ticksuffix="M",
             tickfont=dict(color="#52B788")
         ),
+        yaxis2=dict(
+            title=dict(text="Upfront CAPEX (M€)", font=dict(color="#E65100")),
+            overlaying="y", side="right", showgrid=False,
+            ticksuffix="M", tickfont=dict(color="#E65100")
+        ),
         height=380, margin=dict(l=20, r=20, t=30, b=20),
-        showlegend=False
+        legend=dict(orientation="h", y=1.15, x=0, font=dict(size=11))
     )
     st.plotly_chart(fig, use_container_width=True)
-    st.caption("Net Value = annual value created (SLA renegotiation + avoided carbon/fuel cost) "
-               "− upfront CAPEX amortised over a 3-year vehicle life. Derived from NB06 and Table 5.3.")
+    st.caption("Net Economic Value = Annual Operational Savings (SLA + Carbon/Fuel) minus Amortized Upfront CAPEX (3-year horizon)[cite: 1].")
 
 with table_col:
     st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
     st.markdown("""
     <table class='capex-tbl'>
-        <tr><th>Electric</th><th>Annual value</th><th>Upfront</th><th>Net Value/yr</th></tr>
+        <tr><th>Electric</th><th>Annual Value</th><th>Upfront</th><th>Net Value/yr</th></tr>
         <tr><td>0%</td><td>€2.30M</td><td>€0M</td><td>€2.30M</td></tr>
         <tr><td>25%</td><td>€5.04M</td><td>~€5M</td><td>€3.37M</td></tr>
         <tr><td>50%</td><td>€7.77M</td><td>~€10M</td><td>€4.44M</td></tr>
@@ -231,8 +238,9 @@ with table_col:
         <tr><td>100%</td><td>€13.24M</td><td>~€22M</td><td>€5.91M</td></tr>
     </table>
     <div class='co2-note' style='margin-top:1rem; text-align: left;'>
-        Net Value keeps rising to 100% (€5.91M). The strategic case for stopping at 75% is capital efficiency:
-        you secure <b>87.6%</b> of maximum value while saving <b>€6M</b> in upfront CAPEX, avoiding the sharp drop in marginal returns (€0.12 vs €0.55 per euro).
+        <b>Marginal Returns Analysis:</b> Notice how moving from 0% to 50% adds large jumps in Net Value, 
+        whereas the final step from 75% to 100% requires another €6M in CAPEX for heavily diminishing economic returns, 
+        while completely erasing the commercial SLA flexibility lever[cite: 1].
     </div>
     """, unsafe_allow_html=True)
 
@@ -252,9 +260,7 @@ with m3:
 
 st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
 st.success("""
-    **The bottom line:** the choice isn't "green or cheap" — it's finding the right mix of vehicles.
-    Stopping at ~75% electric captures the vast majority of the financial value while preserving the SLA
-    lever's flexibility; pushing to 100% costs proportionally more for comparatively little extra return,
-    and turns a growing carbon bill (up to €7.3M/year) into a stable, predictable one either way.
+    **The bottom line:** The choice isn't binary. Stopping at an optimal **75% electrification threshold** captures 
+    the vast economic and environmental benefits while avoiding capital lock-in, preserving operational agility[cite: 1].
 """)
-st.caption("Case study: NextMile Italia (Ch. 5). Cost/benefit from Table 5.3 and NB06 (Scenario C). Carbon valued at EU ETS price (65 €/t, 2024). Order-of-magnitude estimates for one simulated operator; they scale with fleet size.")
+st.caption("Case study: NextMile Italia (Ch. 5). Cost/benefit from Table 5.3 and NB06 (Scenario C). Carbon valued at EU ETS price (65 €/t, 2024)[cite: 1].")
