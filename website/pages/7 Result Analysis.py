@@ -179,18 +179,6 @@ st.markdown(
 chart_col, table_col = st.columns([1.3, 1])
 with chart_col:
     # ── Net Value curve — REAL numbers only ────────────────────────
-    # annual_value is derived directly from NB06 / fleet_kpis.json:
-    # avoided_kg(e) = e*(ice_total_co2_kg - ev_total_co2_kg)
-    #                 + scenario_A_sla_saving_kg*(1-e)
-    # converted to euros at the EU ETS price (65 €/t), annualised (365 days).
-    # This is genuinely linear in EV share (confirmed against NB06's own
-    # Scenario C formula), so Net Value (value - amortised CAPEX) is
-    # concave (its growth rate slows) but never decreases — it does NOT
-    # peak at 75% and decline afterwards. The strategic case for stopping
-    # at 75% is NOT "maximum euros" (100% yields more): it is that 75%
-    # already captures 87.6% of the maximum value at meaningfully lower
-    # CAPEX, while the SLA lever (still worth 3.5% at 75%, per thesis
-    # Sec. 5.2.2 / Scenario C) is about to be eliminated entirely.
     ev_share       = [0, 25, 50, 75, 100]
     annual_value   = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr — real, from NB06/fleet_kpis.json
     capex          = [0, 5, 10, 16, 22]                 # M€ upfront — Table 5.3 (thesis)
@@ -286,4 +274,3 @@ st.success("""
     and turns a growing carbon bill (up to €7.3M/year) into a stable, predictable one either way.
 """)
 st.caption("Case study: NextMile Italia (Ch. 5). Cost/benefit from Table 5.3 and NB06 (Scenario C). Carbon valued at EU ETS price (65 €/t, 2024). Order-of-magnitude estimates for one simulated operator; they scale with fleet size.")
-```eof
