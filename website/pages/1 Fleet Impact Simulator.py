@@ -14,9 +14,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-GLOBAL_GRID_INTENSITY = 0.475  
-GLOBAL_DIESEL_CO2 = 2.640      
-GLOBAL_SCC = 80.0              
+GLOBAL_GRID_INTENSITY = 0.475
+GLOBAL_DIESEL_CO2 = 2.640
+GLOBAL_SCC = 80.0
 
 def render_navigation(current_page="Simulator"):
     logo_svg = (
@@ -36,13 +36,13 @@ def render_navigation(current_page="Simulator"):
         unsafe_allow_html=True,
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
-    
+
     sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5, c6] 
+    cols = [c1, c2, c3, c4, c5, c6]
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Carbon Emission Prediction.py"),
-        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"),
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -130,6 +130,10 @@ html, body, [class*="css"] {
     border-radius: 10px; padding: 1.2rem 1rem;
     text-align: center; transition: all .2s ease;
 }
+.status-pill { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.68rem; padding:.15rem .6rem; border-radius:12px; margin-right:.4rem; }
+.status-ml { background: rgba(82,183,136,.18); color:#52B788; border:1px solid rgba(82,183,136,.4); }
+.status-fallback { background: rgba(230,81,0,.12); color:#E65100; border:1px solid rgba(230,81,0,.35); }
+
 div.stButton > button {
     background: rgba(45,106,79,.3) !important; color: #95D5B2 !important;
     border: 1px solid rgba(82,183,136,.3) !important; border-radius: 8px !important;
@@ -152,85 +156,160 @@ def format_time(hours):
 
 def co2_equivalents(kg):
     return {
-        "🌳": {"val": round(kg / 21.77, 1), "label": "trees needed\n1 year to absorb"},   
+        "🌳": {"val": round(kg / 21.77, 1), "label": "trees needed\n1 year to absorb"},
         "🚗": {"val": round(kg / 0.170, 1), "label": "km driven in\nan average diesel car"},
-        "📱": {"val": round(kg / 0.0085, 0), "label": "smartphone\nfull charges"},         
-        "🍔": {"val": round(kg / 2.5, 1),   "label": "beef burgers\nin carbon footprint"}, 
+        "📱": {"val": round(kg / 0.0085, 0), "label": "smartphone\nfull charges"},
+        "🍔": {"val": round(kg / 2.5, 1),   "label": "beef burgers\nin carbon footprint"},
     }
 
+# ══════════════════════════════════════════════════════════════════════
+# MODEL LOADING — was looking for "model_electric_co2.pkl" (string-replace
+# guess), which NB02 never produces. The real files are model_thermal_co2.pkl
+# (ICE) and model_ev_eu_efficiency.pkl / model_ev_efficiency.pkl (EV).
+# ══════════════════════════════════════════════════════════════════════
 @st.cache_resource(show_spinner=False)
 def load_models():
     base = Path(__file__).parent
-    candidates = [
-        base / "model_thermal_co2.pkl",
-        base.parent / "model_thermal_co2.pkl",
-        Path("model_thermal_co2.pkl"),
-    ]
-    for p in candidates:
-        if p.exists():
-            try:
-                ice = joblib.load(str(p))
-                ev  = joblib.load(str(p).replace("thermal", "electric"))
-                return ice, ev, "ML models loaded and active"
-            except Exception:
-                pass
-    return None, None, "Physics simulation active please place pkl files to enable ML"
+    search_dirs = [base, base.parent, Path(".")]
+
+    def find(filename):
+        for d in search_dirs:
+            p = d / filename
+            if p.exists():
+                try:
+                    return joblib.load(str(p))
+                except Exception:
+                    pass
+        return None
+
+    ice = find("model_thermal_co2.pkl")
+    ev  = find("model_ev_eu_efficiency.pkl") or find("model_ev_efficiency.pkl")
+
+    if ice is not None and ev is not None:
+        status = "ML models loaded and active (ICE + EV)"
+    elif ice is not None or ev is not None:
+        status = f"Partial ML load — ICE:{'yes' if ice is not None else 'fallback'} · EV:{'yes' if ev is not None else 'fallback'}"
+    else:
+        status = "Physics simulation active — place .pkl files in project root to enable ML"
+    return ice, ev, status
 
 model_ice, model_ev, model_status = load_models()
 
+# VEHICLES: "scale" is the physics-fallback size factor for ICE vehicles.
+# For EV vehicles, "ice_equivalent" points to the ICE vehicle of the same
+# size class — used both by the physics fallback and by the traffic/SLA
+# modulation applied on top of the EV model's static prediction (see note
+# on EV_STRESS_DAMPENING below).
 VEHICLES = {
-    "Electric Bike":   {"icon": "🚴", "type": "EV",  "scale": 0.15, "src": "Rome Shared Mobility"},
-    "Electric Van":    {"icon": "🚐", "type": "EV",  "scale": 1.4, "src": "Milan BMS Logs"},
+    "Electric Bike":   {"icon": "🚴", "type": "EV",  "scale": 0.15, "src": "Rome Shared Mobility",
+                         "ice_equivalent": "Thermal Scooter",
+                         "ev_specs": {"Battery capacity (kWh)": 1.0, "Curb weight (kg)": 25,
+                                      "Electric range (km)": 60, "Segment": 0, "Battery_Chem_Code": 0,
+                                      "Energy density (Wh/kg)": 150}},
+    "Electric Van":    {"icon": "🚐", "type": "EV",  "scale": 1.4, "src": "Milan BMS Logs",
+                         "ice_equivalent": "Thermal Van",
+                         # Matches Table 3.2's own Electric Van baseline (147.5 Wh/km raw,
+                         # 2,200 kg, 75 kWh LFP battery) instead of an arbitrary guess.
+                         "ev_specs": {"Battery capacity (kWh)": 75, "Curb weight (kg)": 2200,
+                                      "Electric range (km)": 300, "Segment": 2, "Battery_Chem_Code": 1,
+                                      "Energy density (Wh/kg)": 160}},
     "Thermal Scooter": {"icon": "🏍️", "type": "ICE", "scale": 0.65, "src": "India Urban Fleet"},
     "Thermal Van":     {"icon": "🚚", "type": "ICE", "scale": 1.8, "src": "Fiat Ducato OBD-II"},
     "Thermal Truck":   {"icon": "🚛", "type": "ICE", "scale": 3.5, "src": "7.5t Rigid Diesel"},
 }
 
-def get_physics(traffic, sla, dist_km):
+# The EV Ridge model (FEATS_EV / FEATS_EU) is trained ONLY on vehicle specs
+# (battery, weight/range, segment, chemistry) — it has NO traffic or SLA
+# feature and cannot respond to those inputs by itself. To keep the
+# simulator interactive while staying honest about what the model can and
+# can't do, we scale its static Wh/km output by a small, explicitly
+# labelled multiplier tied to the validated finding that EV emissions are
+# far less traffic-sensitive than ICE (Appendix B.3: ICE +55% vs EV +11%
+# in congestion) — this modulation is NOT part of the trained model.
+EV_STRESS_DAMPENING = 0.15
+
+def get_physics(traffic, sla, dist_km, stress_override=None):
     t_map = {"Light": 1.0, "Moderate": 1.3, "Heavy": 1.8, "Gridlock": 2.5}
     s_map = {"Standard": 1.0, "Two-Day": 1.05, "Express": 1.28, "Same-Day": 1.55}
-    stress   = t_map[traffic] * s_map[sla]
+    stress = stress_override if stress_override is not None else t_map[traffic] * s_map[sla]
     avg_kmh  = max(5, 50 / stress)
     dur_h    = dist_km / avg_kmh
     rpm      = 1200 + (800 * (stress - 1))
     load     = 20   + (15  * stress)
+    speed_mps = avg_kmh / 3.6
+    # Expected value of |N(0, 0.12*stress)|, matching the stochastic
+    # acceleration model used in NB03 to build the simulated training data.
+    acceleration = 0.7979 * (0.12 * stress)
+    kinetic_power = speed_mps * max(0, acceleration)
     return {"kmh": avg_kmh, "sec": dur_h * 3600, "h": dur_h,
-            "rpm": rpm, "load": load, "stress": stress}
+            "rpm": rpm, "load": load, "stress": stress,
+            "speed_mps": speed_mps, "acceleration": acceleration,
+            "kinetic_power": kinetic_power}
+
+def _ice_fallback_kg(scale, p):
+    return ((p["rpm"] * p["load"]) / 150_000 * p["sec"] * scale) / 1000
+
+def _ev_fallback_kg(ice_equivalent_scale, real_stress, dist_km):
+    ev_stress = 1 + (real_stress - 1) * EV_STRESS_DAMPENING
+    p = get_physics(None, None, dist_km, stress_override=ev_stress)
+    ice_equiv_kg = _ice_fallback_kg(ice_equivalent_scale, p)
+    return ice_equiv_kg * 0.20  # 1 - 0.80 validated ICE->EV reduction (external validation, Amazon)
 
 def calc_co2(veh_name, traffic, sla, dist_km):
+    """Returns (kg CO2, source). Tries the real trained model first (with a
+    plausibility check on its output); falls back to the physics heuristic
+    otherwise. NOTE: scale is applied exactly ONCE — either inside the ML
+    branch (on top of the model's own g/s or Wh/km output) or inside the
+    fallback branch — never both, unlike the previous version."""
     v = VEHICLES[veh_name]
+    t_map = {"Light": 1.0, "Moderate": 1.3, "Heavy": 1.8, "Gridlock": 2.5}
+    s_map = {"Standard": 1.0, "Two-Day": 1.05, "Express": 1.28, "Same-Day": 1.55}
+    real_stress = t_map[traffic] * s_map[sla]
     p = get_physics(traffic, sla, dist_km)
-    
+
     if v["type"] == "ICE":
         if model_ice is not None:
-            speed_mps = p["kmh"] / 3.6
-            accel = 0.5 * p["stress"]
-            kinetic = speed_mps * accel * v["scale"] * 1000 
-            df_features = pd.DataFrame([{
-                "Speed_mps": speed_mps,
-                "Acceleration": accel,
-                "RPM": p["rpm"],
-                "Load_Pct": p["load"],
-                "Engine_Stress": p["stress"] * 10000, 
-                "Kinetic_Power": kinetic,
-                "Road_Grade": 0.0
-            }])
-            pred_gs = model_ice.predict(df_features)[0]
-            total_kg = (pred_gs * p["sec"]) / 1000
-            return total_kg * v["scale"]
-        else:
-            return ((p["rpm"] * p["load"]) / 150_000 * p["sec"] * v["scale"]) / 1000
+            try:
+                X = pd.DataFrame([{
+                    "Speed_mps": p["speed_mps"],
+                    "Acceleration": p["acceleration"],
+                    "Kinetic_Power": p["kinetic_power"],
+                    "RPM": p["rpm"],
+                    "Load_Pct": p["load"],
+                    "Engine_Stress": p["rpm"] * p["load"],
+                    "Road_Grade": 0.0,
+                }])
+                g_per_sec = float(model_ice.predict(X)[0])
+                if 0 < g_per_sec < 50:
+                    return (g_per_sec * p["sec"] * v["scale"]) / 1000, "ml"
+            except Exception:
+                pass
+        return _ice_fallback_kg(v["scale"], p), "fallback"
     else:
-        base_consumption = 165.2 
-        energy_kwh = (dist_km * base_consumption * p["stress"] * v["scale"]) / 1000
-        return energy_kwh * GLOBAL_GRID_INTENSITY
+        if model_ev is not None:
+            specs = v["ev_specs"]
+            for cols in (
+                ["Battery capacity (kWh)", "Electric range (km)", "Segment", "Battery_Chem_Code"],
+                ["Battery capacity (kWh)", "Curb weight (kg)", "Segment",
+                 "Battery_Chem_Code", "Energy density (Wh/kg)"],
+            ):
+                try:
+                    X = pd.DataFrame([{c: specs[c] for c in cols}])
+                    wh_km = float(model_ev.predict(X)[0])
+                    if 0 < wh_km < 500:
+                        ev_stress = 1 + (real_stress - 1) * EV_STRESS_DAMPENING
+                        return (dist_km * wh_km * ev_stress / 1000) * GLOBAL_GRID_INTENSITY, "ml"
+                except Exception:
+                    continue
+        return _ev_fallback_kg(VEHICLES[v["ice_equivalent"]]["scale"], real_stress, dist_km), "fallback"
 
 st.markdown("""
 <div class='fleet-hero'>
     <div class='fleet-eyebrow'>Predictive Analytics · Global Benchmarks</div>
     <div class='fleet-title'>Carbon Emission Prediction</div>
     <p class='fleet-sub'>
-        Physics based emission prediction powered by real time machine learning inference
+        Hybrid ML + physics emission prediction: uses the trained ICE Gradient Boosting
+        and EV Ridge models when available, with a physics-based fallback otherwise.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -278,10 +357,14 @@ st.markdown("</div>", unsafe_allow_html=True)
 if st.button("RUN PREDICTION", type="primary", use_container_width=True):
     veh_data  = VEHICLES[st.session_state.sim_veh]
     p         = get_physics(traffic, sla, dist)
-    co2_total = calc_co2(st.session_state.sim_veh, traffic, sla, dist)
-    
+    co2_total, co2_source = calc_co2(st.session_state.sim_veh, traffic, sla, dist)
+
+    pill_cls = "status-ml" if co2_source == "ml" else "status-fallback"
+    pill_txt = "🧠 ML model" if co2_source == "ml" else "⚙️ physics fallback"
+    st.markdown(f"<span class='status-pill {pill_cls}'>{pill_txt}</span>", unsafe_allow_html=True)
+
     st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
-    
+
     st.markdown(f"""
     <div class='res-card'>
         <div class='res-val'>{co2_total:.2f}<span class='res-unit'>kg</span></div>
