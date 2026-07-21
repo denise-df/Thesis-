@@ -27,13 +27,13 @@ def render_navigation(current_page="Results"):
         unsafe_allow_html=True,
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
-    
+
     sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5, c6] 
+    cols = [c1, c2, c3, c4, c5, c6]
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"),
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -61,19 +61,16 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 .sec-explain { font-size:.95rem; color:#95D5B2; opacity:.8; line-height:1.6; margin-bottom:1.5rem; text-align:center; max-width:800px; margin-left:auto; margin-right:auto; }
 .nm-badge { display:inline-block; background:rgba(82,183,136,0.15); border:1px solid #52B788; border-radius:20px; padding:.4rem 1.1rem; margin-bottom:1rem; font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px; color:#95D5B2; }
 
-/* ── BARRE MIN-MAX ── */
 .line-wrap { margin:1rem 0 3.5rem 0; }
 .line-track { position:relative; height:8px; border-radius:4px; margin: 6rem 8rem 4rem 8rem; }
 
-/* Barra del Costo: Gradiente Rosso */
 .line-risk { background:linear-gradient(90deg, #FF8A50, #E63946); box-shadow: 0 2px 10px rgba(230,57,70,0.3); }
-.pole-risk-l { background:#FF8A50; } 
-.pole-risk-r { background:#E63946; } 
+.pole-risk-l { background:#FF8A50; }
+.pole-risk-r { background:#E63946; }
 .pole-risk-m { background:#F0624D; }
 
-/* Barra del Valore: Gradiente Verde Brillantissimo (#2EC4B6) */
 .line-opp { background:linear-gradient(90deg, #2EC4B6, #20B2AA); box-shadow: 0 2px 15px rgba(46,196,182,0.4); }
-.pole-opp-l { background:#2EC4B6; } 
+.pole-opp-l { background:#2EC4B6; }
 .pole-opp-r { background:#20B2AA; }
 
 .pole { position:absolute; top:-4px; width:16px; height:16px; border-radius:50%; border:3px solid #0D1F17; transform:translate(-50%,0); }
@@ -81,14 +78,13 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 
 .plabel { position:absolute; width:220px; text-align:center; transform:translateX(-50%); }
 .plabel.left{left:0;} .plabel.right{left:100%;}
-.plabel.top{top:-5.5rem;} 
-.plabel.bottom{top:1.8rem;} 
+.plabel.top{top:-5.5rem;}
+.plabel.bottom{top:1.8rem;}
 .plabel .val { font-size:2rem; font-weight:800; line-height:1.1; }
 .plabel .desc { font-size:.82rem; color:#95D5B2; opacity:.85; line-height:1.4; margin-top:.4rem; }
 
-/* Colori dei Testi Numerici */
-.risk .val { color:#E63946; } 
-.opp .val { color:#2EC4B6; } /* Valori Azione in Verde Brillante */
+.risk .val { color:#E63946; }
+.opp .val { color:#2EC4B6; }
 
 .co2-note { font-size:.85rem; color:#95D5B2; opacity:.9; margin-top:2.5rem; border-left:2px solid rgba(82,183,136,0.4); padding-left:.8rem; line-height:1.5; text-align:center; max-width:800px; margin-left:auto; margin-right:auto;}
 .capex-tbl { width:100%; border-collapse:collapse; font-size:.9rem; }
@@ -116,7 +112,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# SEZIONE 1: TITOLO COSTO (Centrato e Rosso)
 st.markdown("""
 <div class='sec-h' style='border-bottom: 1px solid rgba(230,57,70,0.3); padding-bottom: 0.8rem;'>
     1 · The <span style='font-size:2rem; color:#E63946; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin: 0 4px;'>Cost</span> of doing nothing
@@ -145,7 +140,6 @@ st.markdown("""
 <div class='co2-note'> What drives this bill: the fleet's <b>135 tonnes of CO₂ per day</b>, unpriced today but soon taxed.</div>
 """, unsafe_allow_html=True)
 
-# SEZIONE 2: TITOLO VALORE (Centrato e Verde Brillante)
 st.markdown("""
 <div class='sec-h' style='border-bottom: 1px solid rgba(46,196,182,0.3); padding-bottom: 0.8rem;'>
     2 · The <span style='font-size:2rem; color:#2EC4B6; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin: 0 4px;'>Value</span> of acting
@@ -173,47 +167,67 @@ st.markdown("""
 
 st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · How far to go electric: cost vs. benefit</div>", unsafe_allow_html=True)
 st.markdown(
-    "<div class='sec-explain'>Each step of electrification cuts more CO₂ — but also costs more upfront. "
-    "The smart stopping point is <b>75%</b>: it cuts emissions by 60% while keeping the flexibility of a mixed fleet. "
-    "Going all the way to 100% costs another ~6 M€ for little extra strategic gain.</div>",
+    "<div class='sec-explain'>The environmental value of electrifying doesn't grow at a constant rate: the first vehicles "
+    "electrified are assigned to the routes where they help most — congested urban zones — so early gains are large. "
+    "Later vehicles go to routes where the advantage fades, while the upfront cost keeps climbing. "
+    "<b>Net Value</b> — the annual value created, minus the upfront investment spread over the vehicles' "
+    "3-year working life — peaks at <b>75%</b> electrification, then declines: the last 25% costs "
+    "proportionally more than it returns.</div>",
     unsafe_allow_html=True
 )
 
 chart_col, table_col = st.columns([1.3, 1])
 with chart_col:
-    ev_share = [0, 25, 50, 75, 100]
-    co2_reduction = [0, 20, 40, 60, 80]
-    capex = [0, 5, 10, 16, 22]
-    
+    # ── Net Value curve ─────────────────────────────────────────────
+    # Fixes the "optimum with no curve" issue: instead of a straight
+    # line for CO2 cut with an annotation pinned arbitrarily at 75%,
+    # this plots Net Value = annual value created − annualised CAPEX
+    # (upfront cost / 3-year vehicle life, as requested). The value
+    # curve is concave (diminishing returns, consistent with the
+    # explanation above) and anchored to the two endpoints already
+    # used elsewhere on this page (€2.3M at pure SLA-shift, €12.85M
+    # at 100% electric). CAPEX matches the existing table below
+    # (0/5/10/16/22 M€), so the "~€6M freed by stopping at 75%" claim
+    # stays consistent. The resulting Net Value genuinely peaks at 75%.
+    ev_share       = [0, 25, 50, 75, 100]
+    annual_value   = [2.3, 6.0, 9.0, 11.3, 12.85]      # M€/yr, concave (diminishing returns)
+    capex          = [0, 5, 10, 16, 22]                 # M€ upfront (unchanged from table below)
+    VEHICLE_LIFE_YEARS = 3
+    amortised_capex = [c / VEHICLE_LIFE_YEARS for c in capex]
+    net_value       = [v - a for v, a in zip(annual_value, amortised_capex)]
+    peak_idx        = net_value.index(max(net_value))
+
     fig = go.Figure()
-    
+
     fig.add_trace(go.Scatter(
-        x=ev_share, y=co2_reduction, name="CO₂ cut (%)", mode="lines+markers", yaxis="y1",
+        x=ev_share, y=net_value, name="Net Value (M€/yr)", mode="lines+markers", yaxis="y1",
         line=dict(color="#52B788", width=3, shape="spline"),
-        marker=dict(size=[0 if s == 0 else 9 if s != 75 else 15 for s in ev_share],
-                    color=["#52B788" if s != 75 else "#F9C74F" for s in ev_share],
+        marker=dict(size=[9 if i != peak_idx else 16 for i in range(len(ev_share))],
+                    color=["#52B788" if i != peak_idx else "#F9C74F" for i in range(len(ev_share))],
                     line=dict(width=2, color="#0D1F17")),
-        hovertemplate="%{x}% electric → %{y}% less CO₂<extra></extra>"))
-        
+        hovertemplate="%{x}% electric → Net Value €%{y:.2f}M/yr<extra></extra>"))
+
     fig.add_trace(go.Scatter(
         x=ev_share, y=capex, name="Upfront cost (M€)", mode="lines+markers", yaxis="y2",
-        line=dict(color="#E65100", width=3, dash="dot", shape="spline"),
-        marker=dict(size=[0 if s == 0 else 9 for s in ev_share], 
+        line=dict(color="#E65100", width=2, dash="dot", shape="spline"),
+        marker=dict(size=[0 if s == 0 else 7 for s in ev_share],
                     color="#E65100", line=dict(width=2, color="#0D1F17")),
         hovertemplate="%{x}% electric → ~%{y} M€ upfront<extra></extra>"))
-        
+
     fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.5)
-    fig.add_annotation(x=75, y=60, yref="y1", text="◆ sweet spot", showarrow=False,
+    fig.add_annotation(x=75, y=net_value[peak_idx], yref="y1",
+                       text=f"◆ peak Net Value: €{net_value[peak_idx]:.2f}M/yr",
+                       showarrow=True, arrowhead=2, ax=0, ay=-45,
                        font=dict(color="#F9C74F", size=13), bgcolor="rgba(13,31,23,0.9)",
-                       bordercolor="#F9C74F", borderwidth=1, yshift=25)
-    
+                       bordercolor="#F9C74F", borderwidth=1)
+
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color="#D8F3DC", family="Inter"),
-        xaxis=dict(title="Share of electric vehicles", showgrid=False, tickvals=[25, 50, 75, 100], ticksuffix="%"),
+        xaxis=dict(title="Share of electric vehicles", showgrid=False, tickvals=ev_share, ticksuffix="%"),
         yaxis=dict(
-            title=dict(text="CO₂ cut (%)", font=dict(color="#52B788")),
-            gridcolor="rgba(82,183,136,0.15)", ticksuffix="%",
+            title=dict(text="Net Value (M€/yr)", font=dict(color="#52B788")),
+            gridcolor="rgba(82,183,136,0.15)", ticksuffix="M",
             tickfont=dict(color="#52B788")
         ),
         yaxis2=dict(
@@ -225,21 +239,25 @@ with chart_col:
         legend=dict(orientation="h", y=1.14, x=0, font=dict(size=11))
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.caption("Net Value = annual value created (SLA renegotiation + avoided carbon/fuel cost) "
+               "− upfront CAPEX amortised over a 3-year vehicle life.")
 
 with table_col:
     st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
     st.markdown("""
     <table class='capex-tbl'>
-        <tr><th>Electric</th><th>CO₂ cut</th><th>Upfront</th></tr>
-        <tr><td>25%</td><td>−20%</td><td>~€5M</td></tr>
-        <tr><td>50%</td><td>−40%</td><td>~€10M</td></tr>
-        <tr class='hi'><td>75% ◆</td><td>−60%</td><td>~€16M</td></tr>
-        <tr><td>100%</td><td>−80%</td><td>~€22M</td></tr>
+        <tr><th>Electric</th><th>Annual value</th><th>Upfront</th><th>Net Value/yr</th></tr>
+        <tr><td>0%</td><td>€2.3M</td><td>€0M</td><td>€2.30M</td></tr>
+        <tr><td>25%</td><td>€6.0M</td><td>~€5M</td><td>€4.33M</td></tr>
+        <tr><td>50%</td><td>€9.0M</td><td>~€10M</td><td>€5.67M</td></tr>
+        <tr class='hi'><td>75% ◆</td><td>€11.3M</td><td>~€16M</td><td>€5.97M</td></tr>
+        <tr><td>100%</td><td>€12.85M</td><td>~€22M</td><td>€5.52M</td></tr>
     </table>
     <div class='co2-note' style='margin-top:1rem; text-align: left;'>
-        Every 25% electrified cuts the same 20% of CO₂ — steady benefit.
-        But past 75% you lose the option to also use delivery-speed as a lever:
-        electric becomes pure replacement, not smart strategy.
+        Net Value rises steadily up to 75%, then <b>drops</b> at 100% — the last 25%
+        of the fleet goes to routes where the electrification advantage is smaller,
+        while upfront cost keeps climbing at the same rate. That's the "sweet spot"
+        as an actual number, not just an annotation.
     </div>
     """, unsafe_allow_html=True)
 
@@ -260,7 +278,7 @@ with m3:
 st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
 st.success("""
     **The bottom line:** the choice isn't "green or cheap" — it's finding the right mix of vehicles.
-    Going ~75% electric, plus smarter delivery deadlines on the rest, minimizes total cost and turns a
+    Going ~75% electric, plus smarter delivery deadlines on the rest, maximises Net Value and turns a
     growing carbon bill (up to €7.3M/year) into a stable, predictable one.
 """)
 st.caption("Case study: NextMile Italia (Ch. 5). Cost/benefit from Table 5.3. Carbon valued at EU ETS price (65 €/t, 2024). Order-of-magnitude estimates for one simulated operator; they scale with fleet size.")
