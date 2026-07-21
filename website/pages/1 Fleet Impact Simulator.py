@@ -41,7 +41,7 @@ def render_navigation(current_page="Simulator"):
     cols = [c1, c2, c3, c4, c5, c6]
 
     nav = [
-        ("🚗 Simulator", "Simulator", "pages/1 Carbon Emission Prediction.py"),
+        ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
         ("📊 Results",   "Results",   "pages/7 Result Analysis.py"),
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
