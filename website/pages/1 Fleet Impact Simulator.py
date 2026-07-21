@@ -162,36 +162,50 @@ def co2_equivalents(kg):
         "🍔": {"val": round(kg / 2.5, 1),   "label": "beef burgers\nin carbon footprint"},
     }
 
-# ══════════════════════════════════════════════════════════════════════
-# MODEL LOADING — was looking for "model_electric_co2.pkl" (string-replace
-# guess), which NB02 never produces. The real files are model_thermal_co2.pkl
-# (ICE) and model_ev_eu_efficiency.pkl / model_ev_efficiency.pkl (EV).
-# ══════════════════════════════════════════════════════════════════════
 @st.cache_resource(show_spinner=False)
 def load_models():
     base = Path(__file__).parent
-    search_dirs = [base, base.parent, Path(".")]
-
-    def find(filename):
-        for d in search_dirs:
-            p = d / filename
-            if p.exists():
-                try:
-                    return joblib.load(str(p))
-                except Exception:
-                    pass
-        return None
-
-    ice = find("model_thermal_co2.pkl")
-    ev  = find("model_ev_eu_efficiency.pkl") or find("model_ev_efficiency.pkl")
-
-    if ice is not None and ev is not None:
-        status = "ML models loaded and active (ICE + EV)"
-    elif ice is not None or ev is not None:
-        status = f"Partial ML load — ICE:{'yes' if ice is not None else 'fallback'} · EV:{'yes' if ev is not None else 'fallback'}"
+    
+    # Nomi esatti dei file esportati dal NB02
+    ice_filename = "model_thermal_co2.pkl"
+    ev_filename = "model_ev_eu_efficiency.pkl"
+    
+    # Costruiamo i percorsi (cerca prima nella root principale, poi nella cartella pages)
+    ice_candidates = [base.parent / ice_filename, base / ice_filename, Path(ice_filename)]
+    ev_candidates = [base.parent / ev_filename, base / ev_filename, Path(ev_filename)]
+    
+    model_ice = None
+    model_ev = None
+    
+    # Cerca il modello termico
+    for p in ice_candidates:
+        if p.exists():
+            try:
+                model_ice = joblib.load(str(p))
+                break
+            except Exception:
+                pass
+                
+    # Cerca il modello elettrico
+    for p in ev_candidates:
+        if p.exists():
+            try:
+                model_ev = joblib.load(str(p))
+                break
+            except Exception:
+                pass
+                
+    # Determina lo stato per l'interfaccia
+    if model_ice is not None and model_ev is not None:
+        status = "✅ ML models loaded and active"
+    elif model_ice is not None and model_ev is None:
+        status = "⚠️ Partial ML load — ICE: active · EV: fallback"
+    elif model_ice is None and model_ev is not None:
+        status = "⚠️ Partial ML load — ICE: fallback · EV: active"
     else:
-        status = "Physics simulation active — place .pkl files in project root to enable ML"
-    return ice, ev, status
+        status = "⚙️ Physics simulation active (place .pkl files to enable ML)"
+        
+    return model_ice, model_ev, status
 
 model_ice, model_ev, model_status = load_models()
 
