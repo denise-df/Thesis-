@@ -27,13 +27,13 @@ def render_navigation(current_page="Results"):
         unsafe_allow_html=True,
     )
     st.markdown(f"<div class='nav-bar'>{logo_svg}</div>", unsafe_allow_html=True)
-
+    
     sp1, c1, c2, c3, c4, c5, c6, sp2 = st.columns([0.5, 1, 1, 1, 1, 1, 1, 0.5])
-    cols = [c1, c2, c3, c4, c5, c6]
+    cols = [c1, c2, c3, c4, c5, c6] 
 
     nav = [
         ("🚗 Simulator", "Simulator", "pages/1 Fleet Impact Simulator.py"),
-        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"),
+        ("📊 Results",   "Results",   "pages/7 Result Analysis.py"), 
         ("🗺️ Topology",  "Topology",  "pages/6 Topological Analysis.py"),
         ("🚛 Fleet",     "Fleet",     "pages/5 Fleet Comparison.py"),
         ("📖 Glossary",  "Glossary",  "pages/4 Glossary.py"),
@@ -65,12 +65,12 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 .line-track { position:relative; height:8px; border-radius:4px; margin: 6rem 8rem 4rem 8rem; }
 
 .line-risk { background:linear-gradient(90deg, #FF8A50, #E63946); box-shadow: 0 2px 10px rgba(230,57,70,0.3); }
-.pole-risk-l { background:#FF8A50; }
-.pole-risk-r { background:#E63946; }
+.pole-risk-l { background:#FF8A50; } 
+.pole-risk-r { background:#E63946; } 
 .pole-risk-m { background:#F0624D; }
 
 .line-opp { background:linear-gradient(90deg, #2EC4B6, #20B2AA); box-shadow: 0 2px 15px rgba(46,196,182,0.4); }
-.pole-opp-l { background:#2EC4B6; }
+.pole-opp-l { background:#2EC4B6; } 
 .pole-opp-r { background:#20B2AA; }
 
 .pole { position:absolute; top:-4px; width:16px; height:16px; border-radius:50%; border:3px solid #0D1F17; transform:translate(-50%,0); }
@@ -78,13 +78,13 @@ html, body, [class*="css"] { font-family:'Inter',sans-serif !important; backgrou
 
 .plabel { position:absolute; width:220px; text-align:center; transform:translateX(-50%); }
 .plabel.left{left:0;} .plabel.right{left:100%;}
-.plabel.top{top:-5.5rem;}
-.plabel.bottom{top:1.8rem;}
+.plabel.top{top:-5.5rem;} 
+.plabel.bottom{top:1.8rem;} 
 .plabel .val { font-size:2rem; font-weight:800; line-height:1.1; }
 .plabel .desc { font-size:.82rem; color:#95D5B2; opacity:.85; line-height:1.4; margin-top:.4rem; }
 
-.risk .val { color:#E63946; }
-.opp .val { color:#2EC4B6; }
+.risk .val { color:#E63946; } 
+.opp .val { color:#2EC4B6; } 
 
 .co2-note { font-size:.85rem; color:#95D5B2; opacity:.9; margin-top:2.5rem; border-left:2px solid rgba(82,183,136,0.4); padding-left:.8rem; line-height:1.5; text-align:center; max-width:800px; margin-left:auto; margin-right:auto;}
 .capex-tbl { width:100%; border-collapse:collapse; font-size:.9rem; }
@@ -155,7 +155,7 @@ st.markdown("""
 <div class='line-wrap'>
   <div class='line-track line-opp'>
     <div class='plabel left top opp'><div class='val'>€2.3M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>Renegotiating deadlines<br>(no money spent)</div></div>
-    <div class='plabel right top opp'><div class='val'>€12.85M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>Going 100% electric</div></div>
+    <div class='plabel right top opp'><div class='val'>€13.2M<span style='font-size:1rem;'>/yr</span></div><div class='desc'>Going 100% electric</div></div>
     <div class='pole left pole-opp-l'></div>
     <div class='pole right pole-opp-r'></div>
     <div class='plabel left bottom'><div class='desc'>Operational shift</div></div>
@@ -167,43 +167,45 @@ st.markdown("""
 
 st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,0.3); padding-bottom: 0.8rem;'>3 · How far to go electric: cost vs. benefit</div>", unsafe_allow_html=True)
 st.markdown(
-    "<div class='sec-explain'>The environmental value of electrifying doesn't grow at a constant rate: the first vehicles "
-    "electrified are assigned to the routes where they help most — congested urban zones — so early gains are large. "
-    "Later vehicles go to routes where the advantage fades, while the upfront cost keeps climbing. "
-    "<b>Net Value</b> — the annual value created, minus the upfront investment spread over the vehicles' "
-    "3-year working life — peaks at <b>75%</b> electrification, then declines: the last 25% costs "
-    "proportionally more than it returns.</div>",
+    "<div class='sec-explain'>Net Value — the annual value created (SLA renegotiation + avoided carbon/fuel cost), minus the "
+    "upfront investment spread over the vehicles' 3-year working life — keeps growing all the way to 100% electrification. "
+    "But it grows at a steadily <b>slower rate</b>: at <b>75%</b> you have already captured <b>87.6% of the maximum possible value</b>, "
+    "having spent <b>€6M less</b> in upfront CAPEX. The last 25% adds only €0.73M/year in extra value for €6M in extra investment — "
+    "a return of just €0.12 per euro invested, a fraction of the €0.55 the earlier tranches returned — while also permanently "
+    "eliminating the SLA commercial lever, which still carries 3.5% of its benefit at 75% and zero beyond it.</div>",
     unsafe_allow_html=True
 )
 
 chart_col, table_col = st.columns([1.3, 1])
 with chart_col:
-    # ── Net Value curve ─────────────────────────────────────────────
-    # Fixes the "optimum with no curve" issue: instead of a straight
-    # line for CO2 cut with an annotation pinned arbitrarily at 75%,
-    # this plots Net Value = annual value created − annualised CAPEX
-    # (upfront cost / 3-year vehicle life, as requested). The value
-    # curve is concave (diminishing returns, consistent with the
-    # explanation above) and anchored to the two endpoints already
-    # used elsewhere on this page (€2.3M at pure SLA-shift, €12.85M
-    # at 100% electric). CAPEX matches the existing table below
-    # (0/5/10/16/22 M€), so the "~€6M freed by stopping at 75%" claim
-    # stays consistent. The resulting Net Value genuinely peaks at 75%.
+    # ── Net Value curve — REAL numbers only ────────────────────────
+    # annual_value is derived directly from NB06 / fleet_kpis.json:
+    # avoided_kg(e) = e*(ice_total_co2_kg - ev_total_co2_kg)
+    #                 + scenario_A_sla_saving_kg*(1-e)
+    # converted to euros at the EU ETS price (65 €/t), annualised (365 days).
+    # This is genuinely linear in EV share (confirmed against NB06's own
+    # Scenario C formula), so Net Value (value - amortised CAPEX) is
+    # concave (its growth rate slows) but never decreases — it does NOT
+    # peak at 75% and decline afterwards. The strategic case for stopping
+    # at 75% is NOT "maximum euros" (100% yields more): it is that 75%
+    # already captures 87.6% of the maximum value at meaningfully lower
+    # CAPEX, while the SLA lever (still worth 3.5% at 75%, per thesis
+    # Sec. 5.2.2 / Scenario C) is about to be eliminated entirely.
     ev_share       = [0, 25, 50, 75, 100]
-    annual_value   = [2.3, 6.0, 9.0, 11.3, 12.85]      # M€/yr, concave (diminishing returns)
-    capex          = [0, 5, 10, 16, 22]                 # M€ upfront (unchanged from table below)
+    annual_value   = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr — real, from NB06/fleet_kpis.json
+    capex          = [0, 5, 10, 16, 22]                 # M€ upfront — Table 5.3 (thesis)
     VEHICLE_LIFE_YEARS = 3
     amortised_capex = [c / VEHICLE_LIFE_YEARS for c in capex]
-    net_value       = [v - a for v, a in zip(annual_value, amortised_capex)]
-    peak_idx        = net_value.index(max(net_value))
+    net_value       = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
+    STRATEGIC_IDX   = 3  # 75% — the strategic stopping point (NOT the mathematical maximum)
 
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
         x=ev_share, y=net_value, name="Net Value (M€/yr)", mode="lines+markers", yaxis="y1",
         line=dict(color="#52B788", width=3, shape="spline"),
-        marker=dict(size=[9 if i != peak_idx else 16 for i in range(len(ev_share))],
-                    color=["#52B788" if i != peak_idx else "#F9C74F" for i in range(len(ev_share))],
+        marker=dict(size=[9 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
+                    color=["#52B788" if i != STRATEGIC_IDX else "#F9C74F" for i in range(len(ev_share))],
                     line=dict(width=2, color="#0D1F17")),
         hovertemplate="%{x}% electric → Net Value €%{y:.2f}M/yr<extra></extra>"))
 
@@ -215,10 +217,10 @@ with chart_col:
         hovertemplate="%{x}% electric → ~%{y} M€ upfront<extra></extra>"))
 
     fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.5)
-    fig.add_annotation(x=75, y=net_value[peak_idx], yref="y1",
-                       text=f"◆ peak Net Value: €{net_value[peak_idx]:.2f}M/yr",
+    fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX], yref="y1",
+                       text="◆ 75% — 87.6% of max value, €6M less invested",
                        showarrow=True, arrowhead=2, ax=0, ay=-45,
-                       font=dict(color="#F9C74F", size=13), bgcolor="rgba(13,31,23,0.9)",
+                       font=dict(color="#F9C74F", size=12), bgcolor="rgba(13,31,23,0.9)",
                        bordercolor="#F9C74F", borderwidth=1)
 
     fig.update_layout(
@@ -240,24 +242,25 @@ with chart_col:
     )
     st.plotly_chart(fig, use_container_width=True)
     st.caption("Net Value = annual value created (SLA renegotiation + avoided carbon/fuel cost) "
-               "− upfront CAPEX amortised over a 3-year vehicle life.")
+               "− upfront CAPEX amortised over a 3-year vehicle life. Figures derived directly from "
+               "NB06 (Scenario C) and Table 5.3 — Net Value keeps rising to 100%, it does not peak at 75%.")
 
 with table_col:
     st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
     st.markdown("""
     <table class='capex-tbl'>
         <tr><th>Electric</th><th>Annual value</th><th>Upfront</th><th>Net Value/yr</th></tr>
-        <tr><td>0%</td><td>€2.3M</td><td>€0M</td><td>€2.30M</td></tr>
-        <tr><td>25%</td><td>€6.0M</td><td>~€5M</td><td>€4.33M</td></tr>
-        <tr><td>50%</td><td>€9.0M</td><td>~€10M</td><td>€5.67M</td></tr>
-        <tr class='hi'><td>75% ◆</td><td>€11.3M</td><td>~€16M</td><td>€5.97M</td></tr>
-        <tr><td>100%</td><td>€12.85M</td><td>~€22M</td><td>€5.52M</td></tr>
+        <tr><td>0%</td><td>€2.30M</td><td>€0M</td><td>€2.30M</td></tr>
+        <tr><td>25%</td><td>€5.04M</td><td>~€5M</td><td>€3.37M</td></tr>
+        <tr><td>50%</td><td>€7.77M</td><td>~€10M</td><td>€4.44M</td></tr>
+        <tr class='hi'><td>75% ◆</td><td>€10.51M</td><td>~€16M</td><td>€5.18M</td></tr>
+        <tr><td>100%</td><td>€13.24M</td><td>~€22M</td><td>€5.91M</td></tr>
     </table>
     <div class='co2-note' style='margin-top:1rem; text-align: left;'>
-        Net Value rises steadily up to 75%, then <b>drops</b> at 100% — the last 25%
-        of the fleet goes to routes where the electrification advantage is smaller,
-        while upfront cost keeps climbing at the same rate. That's the "sweet spot"
-        as an actual number, not just an annotation.
+        Net Value keeps rising all the way to 100% (€5.91M) — it does not peak at 75%. The strategic
+        case for stopping at 75% is different: you already hold <b>87.6%</b> of the maximum value there,
+        for <b>€6M less</b> CAPEX. The last 25% returns only €0.12 per euro invested (vs €0.55 earlier)
+        and permanently removes the SLA lever.
     </div>
     """, unsafe_allow_html=True)
 
@@ -278,7 +281,9 @@ with m3:
 st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
 st.success("""
     **The bottom line:** the choice isn't "green or cheap" — it's finding the right mix of vehicles.
-    Going ~75% electric, plus smarter delivery deadlines on the rest, maximises Net Value and turns a
-    growing carbon bill (up to €7.3M/year) into a stable, predictable one.
+    Stopping at ~75% electric captures the vast majority of the financial value while preserving the SLA
+    lever's flexibility; pushing to 100% costs proportionally more for comparatively little extra return,
+    and turns a growing carbon bill (up to €7.3M/year) into a stable, predictable one either way.
 """)
-st.caption("Case study: NextMile Italia (Ch. 5). Cost/benefit from Table 5.3. Carbon valued at EU ETS price (65 €/t, 2024). Order-of-magnitude estimates for one simulated operator; they scale with fleet size.")
+st.caption("Case study: NextMile Italia (Ch. 5). Cost/benefit from Table 5.3 and NB06 (Scenario C). Carbon valued at EU ETS price (65 €/t, 2024). Order-of-magnitude estimates for one simulated operator; they scale with fleet size.")
+```eof
