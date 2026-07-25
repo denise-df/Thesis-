@@ -166,8 +166,8 @@ st.markdown("<div class='sec-h' style='border-bottom: 1px solid rgba(82,183,136,
 st.markdown(
     "<div class='sec-explain'><b>Net Value</b> is defined as the <em>Annual Economic Benefit</em> (avoided carbon/fuel costs + SLA optimization savings) "
     "minus the <em>Amortized Upfront Investment (CAPEX)</em> spread over a 3-year vehicle lifecycle[cite: 1]. "
-    "As electrification increases, the curve exhibits <b>diminishing marginal returns</b>: moving from 0% to 75% rapidly captures <b>87.6% of the maximum economic value</b> "
-    "while avoiding the heavy capitalization of the final stretch. Beyond 75%, each extra percentage of EV fleet yields significantly smaller net gains.</div>",
+    "The marginal return is not a smooth decay: it holds steady up to 50% electrification, then drops sharply past that point. "
+    "As a result, moving from 0% to 75% already captures <b>87.6% of the maximum economic value</b>, while the final 25% requires the same capital outlay for a much smaller gain.</div>",
     unsafe_allow_html=True
 )
 
@@ -201,7 +201,7 @@ with chart_col:
 
     fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.7)
     fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX], yref="y1",
-                       text="◆ 75%: Diminishing Returns Threshold<br>(87.6% max value captured, €6M saved)",
+                       text="◆ 75%: Structural Threshold<br>(87.6% max value captured, €6M saved)",
                        showarrow=True, arrowhead=2, ax=0, ay=-45,
                        font=dict(color="#F9C74F", size=11), bgcolor="rgba(13,31,23,0.95)",
                        bordercolor="#F9C74F", borderwidth=1)
@@ -238,8 +238,9 @@ with table_col:
         <tr><td>100%</td><td>€13.24M</td><td>~€22M</td><td>€5.91M</td></tr>
     </table>
     <div class='co2-note' style='margin-top:1rem; text-align: left;'>
-        <b>Marginal Returns Analysis:</b> Notice how moving from 0% to 50% adds large jumps in Net Value, 
-        whereas the final step from 75% to 100% requires another €6M in CAPEX for heavily diminishing economic returns, 
+        <b>Marginal Returns Analysis:</b> Value grows almost linearly up to 50% electrification (+€1.07M, then +€1.06M per 25pp step),
+        then flattens sharply beyond it (+€0.74M, then +€0.73M) — a step change, not a gradual decay.
+        The final stretch to 100% still requires another €6M in CAPEX for that reduced gain,
         while completely erasing the commercial SLA flexibility lever[cite: 1].
     </div>
     """, unsafe_allow_html=True)
