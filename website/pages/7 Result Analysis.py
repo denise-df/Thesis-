@@ -171,93 +171,125 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-chart_col, table_col = st.columns([1.3, 1])
-with chart_col:
-    # ── Net Value curve — Corretto l'hover per evitare il doppio % ──
-    ev_share        = [0, 25, 50, 75, 100]
-    annual_value    = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr
-    capex           = [0, 5, 10, 16, 22]                 # M€ upfront
-    VEHICLE_LIFE_YEARS = 3
-    amortised_capex = [c / VEHICLE_LIFE_YEARS for c in capex]
-    net_value       = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
-    STRATEGIC_IDX   = 3  # 75%
+ev_share        = [0, 25, 50, 75, 100]
+annual_value    = [2.30, 5.04, 7.77, 10.51, 13.24]   # M€/yr
+capex           = [0, 5, 10, 16, 22]                 # M€ upfront
+VEHICLE_LIFE_YEARS = 3
+amortised_capex = [c / VEHICLE_LIFE_YEARS for c in capex]
+net_value       = [round(v - a, 2) for v, a in zip(annual_value, amortised_capex)]
+STRATEGIC_IDX   = 3  # 75%
 
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter(
-        x=ev_share, y=net_value, name="Net Economic Value (M€/yr)", mode="lines+markers", yaxis="y1",
-        line=dict(color="#52B788", width=3, shape="spline"),
-        marker=dict(size=[9 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
-                    color=["#52B788" if i != STRATEGIC_IDX else "#F9C74F" for i in range(len(ev_share))],
-                    line=dict(width=2, color="#0D1F17")),
-        hovertemplate="<b>%{x}% Electric Fleet</b><br>Net Value: €%{y:.2f}M/yr<extra></extra>"))
-
-    fig.add_trace(go.Scatter(
-        x=ev_share, y=capex, name="Upfront CAPEX (M€)", mode="lines+markers", yaxis="y2",
-        line=dict(color="#E65100", width=2, dash="dot", shape="spline"),
-        marker=dict(size=[0 if s == 0 else 7 for s in ev_share],
-                    color="#E65100", line=dict(width=2, color="#0D1F17")),
-        hovertemplate="<b>%{x}% Electric Fleet</b><br>Upfront CAPEX: €%{y}M<extra></extra>"))
-
-    fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.7)
-    fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX], yref="y1",
-                       text="◆ 75%: Structural Threshold<br>(87.6% max value captured, €6M saved)",
-                       showarrow=True, arrowhead=2, ax=0, ay=-45,
-                       font=dict(color="#F9C74F", size=11), bgcolor="rgba(13,31,23,0.95)",
-                       bordercolor="#F9C74F", borderwidth=1)
-
-    fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#D8F3DC", family="Inter"),
-        xaxis=dict(title="Fleet Electrification Share", showgrid=False, tickvals=ev_share, ticksuffix="%"),
-        yaxis=dict(
-            title=dict(text="Net Value (M€/yr)", font=dict(color="#52B788")),
-            gridcolor="rgba(82,183,136,0.15)", ticksuffix="M",
-            tickfont=dict(color="#52B788")
-        ),
-        yaxis2=dict(
-            title=dict(text="Upfront CAPEX (M€)", font=dict(color="#E65100")),
-            overlaying="y", side="right", showgrid=False,
-            ticksuffix="M", tickfont=dict(color="#E65100")
-        ),
-        height=380, margin=dict(l=20, r=20, t=30, b=20),
-        legend=dict(orientation="h", y=1.15, x=0, font=dict(size=11))
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    st.caption("Net Economic Value = Annual Operational Savings (SLA + Carbon/Fuel) minus Amortized Upfront CAPEX (3-year horizon)[cite: 1].")
-
-with table_col:
-    st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
-    st.markdown("""
-    <table class='capex-tbl'>
-        <tr><th>Electric</th><th>Annual Value</th><th>Upfront</th><th>Net Value/yr</th></tr>
-        <tr><td>0%</td><td>€2.30M</td><td>€0M</td><td>€2.30M</td></tr>
-        <tr><td>25%</td><td>€5.04M</td><td>~€5M</td><td>€3.37M</td></tr>
-        <tr><td>50%</td><td>€7.77M</td><td>~€10M</td><td>€4.44M</td></tr>
-        <tr class='hi'><td>75% ◆</td><td>€10.51M</td><td>~€16M</td><td>€5.18M</td></tr>
-        <tr><td>100%</td><td>€13.24M</td><td>~€22M</td><td>€5.91M</td></tr>
-    </table>
-    <div class='co2-note' style='margin-top:1rem; text-align: left;'>
-        <b>Marginal Returns Analysis:</b> Value grows almost linearly up to 50% electrification (+€1.07M, then +€1.06M per 25pp step),
-        then flattens sharply beyond it (+€0.74M, then +€0.73M) — a step change, not a gradual decay.
-        The final stretch to 100% still requires another €6M in CAPEX for that reduced gain,
-        while completely erasing the commercial SLA flexibility lever[cite: 1].
-    </div>
-    """, unsafe_allow_html=True)
+# ── Headline numbers — the 10-second takeaway ──
+h1, h2, h3 = st.columns(3)
+with h1:
+    st.markdown("""<div class='mini-card'><div class='mini-lbl'>Optimal threshold</div><div class='mini-num'>75%</div></div>""", unsafe_allow_html=True)
+with h2:
+    st.markdown("""<div class='mini-card'><div class='mini-lbl'>Value captured</div><div class='mini-num'>87.6%</div></div>""", unsafe_allow_html=True)
+with h3:
+    st.markdown("""<div class='mini-card'><div class='mini-lbl'>CAPEX saved</div><div class='mini-num'>€6M</div></div>""", unsafe_allow_html=True)
 
 st.markdown("<div style='height:1rem;'></div>", unsafe_allow_html=True)
-m1, m2, m3 = st.columns(3)
-with m1:
-    st.markdown("""<div class='mini-card'><div class='mini-lbl'>Money freed by stopping at 75%</div><div class='mini-num'>~€6M</div></div>""", unsafe_allow_html=True)
-with m2:
-    st.markdown("""
-    <div class='mini-card'>
-        <div class='mini-lbl'>Full electrification CAPEX*</div>
-        <div class='mini-num'>€22M</div>
-        <div class='mini-asterisk'>*Excluding charging infrastructure costs.</div>
-    </div>""", unsafe_allow_html=True)
-with m3:
-    st.markdown("""<div class='mini-card'><div class='mini-lbl'>Electric = steadier daily costs</div><div class='mini-num'>1.39× <small>more stable</small></div></div>""", unsafe_allow_html=True)
+
+# ── Simplified single-axis chart — only the Net Value curve, 75% emphasized ──
+fig_simple = go.Figure()
+fig_simple.add_trace(go.Scatter(
+    x=ev_share, y=net_value, name="Net Economic Value (M€/yr)", mode="lines+markers",
+    line=dict(color="#52B788", width=3, shape="spline"),
+    marker=dict(size=[9 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
+                color=["#52B788" if i != STRATEGIC_IDX else "#F9C74F" for i in range(len(ev_share))],
+                line=dict(width=2, color="#0D1F17")),
+    hovertemplate="<b>%{x}% Electric Fleet</b><br>Net Value: €%{y:.2f}M/yr<extra></extra>"))
+fig_simple.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.7)
+fig_simple.add_annotation(x=75, y=net_value[STRATEGIC_IDX],
+                   text="◆ 75%: Structural Threshold",
+                   showarrow=True, arrowhead=2, ax=0, ay=-45,
+                   font=dict(color="#F9C74F", size=12), bgcolor="rgba(13,31,23,0.95)",
+                   bordercolor="#F9C74F", borderwidth=1)
+fig_simple.update_layout(
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#D8F3DC", family="Inter"),
+    xaxis=dict(title="Fleet Electrification Share", showgrid=False, tickvals=ev_share, ticksuffix="%"),
+    yaxis=dict(title=dict(text="Net Value (M€/yr)", font=dict(color="#52B788")),
+               gridcolor="rgba(82,183,136,0.15)", ticksuffix="M", tickfont=dict(color="#52B788")),
+    height=340, margin=dict(l=20, r=20, t=30, b=20), showlegend=False
+)
+st.plotly_chart(fig_simple, use_container_width=True)
+
+st.markdown("<div style='height:0.5rem;'></div>", unsafe_allow_html=True)
+
+with st.expander("Show full breakdown: CAPEX curve, step-by-step table and marginal analysis"):
+    chart_col, table_col = st.columns([1.3, 1])
+    with chart_col:
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=ev_share, y=net_value, name="Net Economic Value (M€/yr)", mode="lines+markers", yaxis="y1",
+            line=dict(color="#52B788", width=3, shape="spline"),
+            marker=dict(size=[9 if i != STRATEGIC_IDX else 16 for i in range(len(ev_share))],
+                        color=["#52B788" if i != STRATEGIC_IDX else "#F9C74F" for i in range(len(ev_share))],
+                        line=dict(width=2, color="#0D1F17")),
+            hovertemplate="<b>%{x}% Electric Fleet</b><br>Net Value: €%{y:.2f}M/yr<extra></extra>"))
+        fig.add_trace(go.Scatter(
+            x=ev_share, y=capex, name="Upfront CAPEX (M€)", mode="lines+markers", yaxis="y2",
+            line=dict(color="#E65100", width=2, dash="dot", shape="spline"),
+            marker=dict(size=[0 if s == 0 else 7 for s in ev_share],
+                        color="#E65100", line=dict(width=2, color="#0D1F17")),
+            hovertemplate="<b>%{x}% Electric Fleet</b><br>Upfront CAPEX: €%{y}M<extra></extra>"))
+        fig.add_vline(x=75, line_dash="dash", line_color="#F9C74F", opacity=0.7)
+        fig.add_annotation(x=75, y=net_value[STRATEGIC_IDX], yref="y1",
+                           text="◆ 75%: Structural Threshold<br>(87.6% max value captured, €6M saved)",
+                           showarrow=True, arrowhead=2, ax=0, ay=-45,
+                           font=dict(color="#F9C74F", size=11), bgcolor="rgba(13,31,23,0.95)",
+                           bordercolor="#F9C74F", borderwidth=1)
+        fig.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#D8F3DC", family="Inter"),
+            xaxis=dict(title="Fleet Electrification Share", showgrid=False, tickvals=ev_share, ticksuffix="%"),
+            yaxis=dict(
+                title=dict(text="Net Value (M€/yr)", font=dict(color="#52B788")),
+                gridcolor="rgba(82,183,136,0.15)", ticksuffix="M",
+                tickfont=dict(color="#52B788")
+            ),
+            yaxis2=dict(
+                title=dict(text="Upfront CAPEX (M€)", font=dict(color="#E65100")),
+                overlaying="y", side="right", showgrid=False,
+                ticksuffix="M", tickfont=dict(color="#E65100")
+            ),
+            height=380, margin=dict(l=20, r=20, t=30, b=20),
+            legend=dict(orientation="h", y=1.15, x=0, font=dict(size=11))
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("Net Economic Value = Annual Operational Savings (SLA + Carbon/Fuel) minus Amortized Upfront CAPEX (3-year horizon)[cite: 1].")
+
+    with table_col:
+        st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
+        st.markdown("""
+        <table class='capex-tbl'>
+            <tr><th>Electric</th><th>Annual Value</th><th>Upfront</th><th>Net Value/yr</th></tr>
+            <tr><td>0%</td><td>€2.30M</td><td>€0M</td><td>€2.30M</td></tr>
+            <tr><td>25%</td><td>€5.04M</td><td>~€5M</td><td>€3.37M</td></tr>
+            <tr><td>50%</td><td>€7.77M</td><td>~€10M</td><td>€4.44M</td></tr>
+            <tr class='hi'><td>75% ◆</td><td>€10.51M</td><td>~€16M</td><td>€5.18M</td></tr>
+            <tr><td>100%</td><td>€13.24M</td><td>~€22M</td><td>€5.91M</td></tr>
+        </table>
+        <div class='co2-note' style='margin-top:1rem; text-align: left;'>
+            <b>Marginal Returns Analysis:</b> Value grows almost linearly up to 50% electrification (+€1.07M, then +€1.06M per 25pp step),
+            then flattens sharply beyond it (+€0.74M, then +€0.73M) — a step change, not a gradual decay.
+            The final stretch to 100% still requires another €6M in CAPEX for that reduced gain,
+            while completely erasing the commercial SLA flexibility lever[cite: 1].
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height:1rem;'></div>", unsafe_allow_html=True)
+    m1, m2 = st.columns(2)
+    with m1:
+        st.markdown("""
+        <div class='mini-card'>
+            <div class='mini-lbl'>Full electrification CAPEX*</div>
+            <div class='mini-num'>€22M</div>
+            <div class='mini-asterisk'>*Excluding charging infrastructure costs.</div>
+        </div>""", unsafe_allow_html=True)
+    with m2:
+        st.markdown("""<div class='mini-card'><div class='mini-lbl'>Electric = steadier daily costs</div><div class='mini-num'>1.39× <small>more stable</small></div></div>""", unsafe_allow_html=True)
 
 st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
 st.success("""
